@@ -1,0 +1,18 @@
+fn greet(name: String) {
+    println!("Hello, {}", name);
+}
+
+fn push_name(list: Vec<String>, name: String) {
+    list.push(name);
+}
+
+fn ownership_example() {
+    let a: String = "hello";
+    let b: String = "world";
+    let list: Vec<String> = Vec::new();
+    greet(a);
+    greet(b);
+    push_name(list, a);
+    push_name(list, b);
+    println!("{}", b);
+}

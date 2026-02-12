@@ -1,0 +1,318 @@
+=== AST: examples\04_error_propagation.nanachi ===
+Program {
+    items: [
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "read_config",
+                    generics: [],
+                    params: [
+                        FnParam {
+                            kind: Typed {
+                                name: "path",
+                                ty: TypeExpr {
+                                    kind: Named {
+                                        path: Path {
+                                            segments: [
+                                                "String",
+                                            ],
+                                            span: Span {
+                                                start: 21,
+                                                end: 27,
+                                            },
+                                        },
+                                        generics: [],
+                                    },
+                                    span: Span {
+                                        start: 21,
+                                        end: 27,
+                                    },
+                                },
+                            },
+                            span: Span {
+                                start: 15,
+                                end: 27,
+                            },
+                        },
+                    ],
+                    return_ty: Some(
+                        TypeExpr {
+                            kind: Named {
+                                path: Path {
+                                    segments: [
+                                        "String",
+                                    ],
+                                    span: Span {
+                                        start: 32,
+                                        end: 38,
+                                    },
+                                },
+                                generics: [],
+                            },
+                            span: Span {
+                                start: 32,
+                                end: 38,
+                            },
+                        },
+                    ),
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Let {
+                                    pattern: Pattern {
+                                        kind: Ident(
+                                            "content",
+                                        ),
+                                        span: Span {
+                                            start: 49,
+                                            end: 56,
+                                        },
+                                    },
+                                    ty: Some(
+                                        TypeExpr {
+                                            kind: Named {
+                                                path: Path {
+                                                    segments: [
+                                                        "String",
+                                                    ],
+                                                    span: Span {
+                                                        start: 58,
+                                                        end: 64,
+                                                    },
+                                                },
+                                                generics: [],
+                                            },
+                                            span: Span {
+                                                start: 58,
+                                                end: 64,
+                                            },
+                                        },
+                                    ),
+                                    value: Some(
+                                        Expr {
+                                            kind: FnCall {
+                                                func: Expr {
+                                                    kind: Path(
+                                                        Path {
+                                                            segments: [
+                                                                "fs",
+                                                                "read_to_string",
+                                                            ],
+                                                            span: Span {
+                                                                start: 67,
+                                                                end: 85,
+                                                            },
+                                                        },
+                                                    ),
+                                                    span: Span {
+                                                        start: 67,
+                                                        end: 85,
+                                                    },
+                                                },
+                                                args: [
+                                                    Expr {
+                                                        kind: Path(
+                                                            Path {
+                                                                segments: [
+                                                                    "path",
+                                                                ],
+                                                                span: Span {
+                                                                    start: 86,
+                                                                    end: 90,
+                                                                },
+                                                            },
+                                                        ),
+                                                        span: Span {
+                                                            start: 86,
+                                                            end: 90,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            span: Span {
+                                                start: 67,
+                                                end: 91,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 45,
+                                    end: 92,
+                                },
+                            },
+                        ],
+                        tail_expr: Some(
+                            Expr {
+                                kind: Path(
+                                    Path {
+                                        segments: [
+                                            "content",
+                                        ],
+                                        span: Span {
+                                            start: 97,
+                                            end: 104,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 97,
+                                    end: 104,
+                                },
+                            },
+                        ),
+                        span: Span {
+                            start: 39,
+                            end: 106,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 106,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 106,
+            },
+        },
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "process",
+                    generics: [],
+                    params: [],
+                    return_ty: None,
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Let {
+                                    pattern: Pattern {
+                                        kind: Ident(
+                                            "config",
+                                        ),
+                                        span: Span {
+                                            start: 131,
+                                            end: 137,
+                                        },
+                                    },
+                                    ty: Some(
+                                        TypeExpr {
+                                            kind: Named {
+                                                path: Path {
+                                                    segments: [
+                                                        "String",
+                                                    ],
+                                                    span: Span {
+                                                        start: 139,
+                                                        end: 145,
+                                                    },
+                                                },
+                                                generics: [],
+                                            },
+                                            span: Span {
+                                                start: 139,
+                                                end: 145,
+                                            },
+                                        },
+                                    ),
+                                    value: Some(
+                                        Expr {
+                                            kind: FnCall {
+                                                func: Expr {
+                                                    kind: Path(
+                                                        Path {
+                                                            segments: [
+                                                                "read_config",
+                                                            ],
+                                                            span: Span {
+                                                                start: 148,
+                                                                end: 159,
+                                                            },
+                                                        },
+                                                    ),
+                                                    span: Span {
+                                                        start: 148,
+                                                        end: 159,
+                                                    },
+                                                },
+                                                args: [
+                                                    Expr {
+                                                        kind: Literal(
+                                                            String(
+                                                                "config.toml",
+                                                            ),
+                                                        ),
+                                                        span: Span {
+                                                            start: 160,
+                                                            end: 173,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            span: Span {
+                                                start: 148,
+                                                end: 174,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 127,
+                                    end: 175,
+                                },
+                            },
+                            Stmt {
+                                kind: Expr(
+                                    Expr {
+                                        kind: MacroCall {
+                                            path: Path {
+                                                segments: [
+                                                    "println",
+                                                ],
+                                                span: Span {
+                                                    start: 180,
+                                                    end: 187,
+                                                },
+                                            },
+                                            delimiter: Paren,
+                                            tokens: "\"{}\" , config",
+                                        },
+                                        span: Span {
+                                            start: 180,
+                                            end: 202,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 180,
+                                    end: 203,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 121,
+                            end: 205,
+                        },
+                    },
+                    span: Span {
+                        start: 108,
+                        end: 205,
+                    },
+                },
+            ),
+            span: Span {
+                start: 108,
+                end: 205,
+            },
+        },
+    ],
+}

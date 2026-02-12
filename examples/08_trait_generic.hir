@@ -1,0 +1,209 @@
+=== HIR: examples\08_trait_generic.nanachi ===
+HirProgram {
+    items: [
+        HirItem {
+            kind: Trait(
+                HirTrait {
+                    visibility: Private,
+                    name: "Printable",
+                    generics: [],
+                    methods: [
+                        HirTraitMethod {
+                            name: "to_string",
+                            generics: [],
+                            params: [
+                                HirFnParam {
+                                    kind: SelfParam,
+                                    span: Span {
+                                        start: 35,
+                                        end: 39,
+                                    },
+                                },
+                            ],
+                            return_ty: Named {
+                                path: [
+                                    "String",
+                                ],
+                                generics: [],
+                            },
+                            default_body: None,
+                            span: Span {
+                                start: 22,
+                                end: 51,
+                            },
+                        },
+                    ],
+                    span: Span {
+                        start: 0,
+                        end: 53,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 53,
+            },
+        },
+        HirItem {
+            kind: Impl(
+                HirImpl {
+                    generics: [],
+                    trait_name: Some(
+                        [
+                            "Printable",
+                        ],
+                    ),
+                    target: Named {
+                        path: [
+                            "User",
+                        ],
+                        generics: [],
+                    },
+                    methods: [
+                        HirFunction {
+                            visibility: Private,
+                            is_async: false,
+                            name: "to_string",
+                            generics: [],
+                            params: [
+                                HirFnParam {
+                                    kind: SelfParam,
+                                    span: Span {
+                                        start: 98,
+                                        end: 102,
+                                    },
+                                },
+                            ],
+                            return_ty: Named {
+                                path: [
+                                    "String",
+                                ],
+                                generics: [],
+                            },
+                            where_clause: [],
+                            body: HirBlock {
+                                stmts: [],
+                                tail_expr: Some(
+                                    HirExpr {
+                                        kind: MacroCall {
+                                            path: [
+                                                "format",
+                                            ],
+                                            delimiter: Paren,
+                                            tokens: "\"{} (age {})\" , self . name , self . age",
+                                        },
+                                        ty: Unresolved,
+                                        span: Span {
+                                            start: 124,
+                                            end: 167,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 114,
+                                    end: 173,
+                                },
+                            },
+                            span: Span {
+                                start: 85,
+                                end: 173,
+                            },
+                        },
+                    ],
+                    span: Span {
+                        start: 55,
+                        end: 175,
+                    },
+                },
+            ),
+            span: Span {
+                start: 55,
+                end: 175,
+            },
+        },
+        HirItem {
+            kind: Function(
+                HirFunction {
+                    visibility: Private,
+                    is_async: false,
+                    name: "print_it",
+                    generics: [
+                        HirGenericParam {
+                            name: "T",
+                            bounds: [
+                                Named {
+                                    path: [
+                                        "Printable",
+                                    ],
+                                    generics: [],
+                                },
+                            ],
+                            span: Span {
+                                start: 189,
+                                end: 201,
+                            },
+                        },
+                    ],
+                    params: [
+                        HirFnParam {
+                            kind: Typed {
+                                name: "item",
+                                ty: Named {
+                                    path: [
+                                        "T",
+                                    ],
+                                    generics: [],
+                                },
+                            },
+                            span: Span {
+                                start: 203,
+                                end: 210,
+                            },
+                        },
+                    ],
+                    return_ty: Unit,
+                    where_clause: [],
+                    body: HirBlock {
+                        stmts: [
+                            HirStmt {
+                                kind: Expr(
+                                    HirExpr {
+                                        kind: MacroCall {
+                                            path: [
+                                                "println",
+                                            ],
+                                            delimiter: Paren,
+                                            tokens: "\"{}\" , item . to_string ( )",
+                                        },
+                                        ty: Unresolved,
+                                        span: Span {
+                                            start: 218,
+                                            end: 250,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 218,
+                                    end: 251,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 212,
+                            end: 253,
+                        },
+                    },
+                    span: Span {
+                        start: 177,
+                        end: 253,
+                    },
+                },
+            ),
+            span: Span {
+                start: 177,
+                end: 253,
+            },
+        },
+    ],
+}

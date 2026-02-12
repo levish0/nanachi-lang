@@ -1,0 +1,13 @@
+fn find_user(id: i32) -> User? {
+    if id == 1 {
+        Some(User { name: "nanachi", age: 3 })
+    } else {
+        None
+    }
+}
+
+fn option_example() {
+    let user: User? = find_user(42);
+    let name: String? = find_user(1)?.name;
+    let age: i32 = find_user(1)?.age ?? 0;
+}

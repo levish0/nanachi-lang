@@ -8,4 +8,9 @@ repository.workspace = true
 authors.workspace = true
 
 [dependencies]
+nanachi-ast = { workspace = true }
 nanachi-hir = { workspace = true }
+nanachi-lexer = { workspace = true }
+
+[dev-dependencies]
+nanachi-parser = { workspace = true }

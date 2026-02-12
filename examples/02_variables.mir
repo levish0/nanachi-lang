@@ -1,0 +1,137 @@
+=== MIR: examples\02_variables.nanachi ===
+MirProgram {
+    bodies: [
+        MirBody {
+            name: "variables",
+            owner: None,
+            is_async: false,
+            locals: [
+                LocalDecl {
+                    name: "_0",
+                    ty: Unit,
+                    kind: ReturnPlace,
+                    span: Span {
+                        start: 0,
+                        end: 99,
+                    },
+                },
+                LocalDecl {
+                    name: "x",
+                    ty: Primitive(
+                        I32,
+                    ),
+                    kind: UserVar,
+                    span: Span {
+                        start: 21,
+                        end: 36,
+                    },
+                },
+                LocalDecl {
+                    name: "y",
+                    ty: Primitive(
+                        I32,
+                    ),
+                    kind: UserVar,
+                    span: Span {
+                        start: 53,
+                        end: 68,
+                    },
+                },
+            ],
+            blocks: [
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        1,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Int(
+                                            "5",
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 21,
+                                end: 36,
+                            },
+                        },
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        1,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Int(
+                                            "10",
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 41,
+                                end: 47,
+                            },
+                        },
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        2,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Int(
+                                            "3",
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 53,
+                                end: 68,
+                            },
+                        },
+                        Statement {
+                            kind: MacroCall {
+                                path: [
+                                    "println",
+                                ],
+                                args: [],
+                            },
+                            span: Span {
+                                start: 73,
+                                end: 96,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Return,
+                        span: Span {
+                            start: 15,
+                            end: 99,
+                        },
+                    },
+                },
+            ],
+            arg_count: 0,
+            return_ty: Unit,
+            span: Span {
+                start: 0,
+                end: 99,
+            },
+        },
+    ],
+}

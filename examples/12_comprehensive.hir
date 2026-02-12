@@ -1,0 +1,669 @@
+=== HIR: examples\12_comprehensive.nanachi ===
+HirProgram {
+    items: [
+        HirItem {
+            kind: Function(
+                HirFunction {
+                    visibility: Private,
+                    is_async: false,
+                    name: "load_users",
+                    generics: [],
+                    params: [
+                        HirFnParam {
+                            kind: Typed {
+                                name: "path",
+                                ty: Named {
+                                    path: [
+                                        "String",
+                                    ],
+                                    generics: [],
+                                },
+                            },
+                            span: Span {
+                                start: 14,
+                                end: 26,
+                            },
+                        },
+                    ],
+                    return_ty: Named {
+                        path: [
+                            "Vec",
+                        ],
+                        generics: [
+                            Named {
+                                path: [
+                                    "User",
+                                ],
+                                generics: [],
+                            },
+                        ],
+                    },
+                    where_clause: [],
+                    body: HirBlock {
+                        stmts: [
+                            HirStmt {
+                                kind: Let {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "content",
+                                        ),
+                                        span: Span {
+                                            start: 51,
+                                            end: 58,
+                                        },
+                                    },
+                                    ty: Named {
+                                        path: [
+                                            "String",
+                                        ],
+                                        generics: [],
+                                    },
+                                    value: Some(
+                                        HirExpr {
+                                            kind: FnCall {
+                                                func: HirExpr {
+                                                    kind: Path(
+                                                        [
+                                                            "fs",
+                                                            "read_to_string",
+                                                        ],
+                                                    ),
+                                                    ty: Unresolved,
+                                                    span: Span {
+                                                        start: 69,
+                                                        end: 87,
+                                                    },
+                                                },
+                                                args: [
+                                                    HirExpr {
+                                                        kind: Path(
+                                                            [
+                                                                "path",
+                                                            ],
+                                                        ),
+                                                        ty: Named {
+                                                            path: [
+                                                                "String",
+                                                            ],
+                                                            generics: [],
+                                                        },
+                                                        span: Span {
+                                                            start: 88,
+                                                            end: 92,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            ty: Unresolved,
+                                            span: Span {
+                                                start: 69,
+                                                end: 93,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 47,
+                                    end: 94,
+                                },
+                            },
+                            HirStmt {
+                                kind: Let {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "lines",
+                                        ),
+                                        span: Span {
+                                            start: 103,
+                                            end: 108,
+                                        },
+                                    },
+                                    ty: Named {
+                                        path: [
+                                            "Vec",
+                                        ],
+                                        generics: [
+                                            Named {
+                                                path: [
+                                                    "String",
+                                                ],
+                                                generics: [],
+                                            },
+                                        ],
+                                    },
+                                    value: Some(
+                                        HirExpr {
+                                            kind: MethodCall {
+                                                receiver: HirExpr {
+                                                    kind: MethodCall {
+                                                        receiver: HirExpr {
+                                                            kind: Path(
+                                                                [
+                                                                    "content",
+                                                                ],
+                                                            ),
+                                                            ty: Named {
+                                                                path: [
+                                                                    "String",
+                                                                ],
+                                                                generics: [],
+                                                            },
+                                                            span: Span {
+                                                                start: 124,
+                                                                end: 131,
+                                                            },
+                                                        },
+                                                        method: "lines",
+                                                        args: [],
+                                                    },
+                                                    ty: Unresolved,
+                                                    span: Span {
+                                                        start: 124,
+                                                        end: 139,
+                                                    },
+                                                },
+                                                method: "collect",
+                                                args: [],
+                                            },
+                                            ty: Unresolved,
+                                            span: Span {
+                                                start: 124,
+                                                end: 149,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 99,
+                                    end: 150,
+                                },
+                            },
+                            HirStmt {
+                                kind: Let {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "users",
+                                        ),
+                                        span: Span {
+                                            start: 159,
+                                            end: 164,
+                                        },
+                                    },
+                                    ty: Named {
+                                        path: [
+                                            "Vec",
+                                        ],
+                                        generics: [
+                                            Named {
+                                                path: [
+                                                    "User",
+                                                ],
+                                                generics: [],
+                                            },
+                                        ],
+                                    },
+                                    value: Some(
+                                        HirExpr {
+                                            kind: FnCall {
+                                                func: HirExpr {
+                                                    kind: Path(
+                                                        [
+                                                            "Vec",
+                                                            "new",
+                                                        ],
+                                                    ),
+                                                    ty: Unresolved,
+                                                    span: Span {
+                                                        start: 178,
+                                                        end: 186,
+                                                    },
+                                                },
+                                                args: [],
+                                            },
+                                            ty: Unresolved,
+                                            span: Span {
+                                                start: 178,
+                                                end: 188,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 155,
+                                    end: 189,
+                                },
+                            },
+                            HirStmt {
+                                kind: For {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "line",
+                                        ),
+                                        span: Span {
+                                            start: 198,
+                                            end: 202,
+                                        },
+                                    },
+                                    iter_ty: Named {
+                                        path: [
+                                            "String",
+                                        ],
+                                        generics: [],
+                                    },
+                                    iter: HirExpr {
+                                        kind: Path(
+                                            [
+                                                "lines",
+                                            ],
+                                        ),
+                                        ty: Named {
+                                            path: [
+                                                "Vec",
+                                            ],
+                                            generics: [
+                                                Named {
+                                                    path: [
+                                                        "String",
+                                                    ],
+                                                    generics: [],
+                                                },
+                                            ],
+                                        },
+                                        span: Span {
+                                            start: 214,
+                                            end: 219,
+                                        },
+                                    },
+                                    body: HirBlock {
+                                        stmts: [
+                                            HirStmt {
+                                                kind: Let {
+                                                    pattern: HirPattern {
+                                                        kind: Ident(
+                                                            "parts",
+                                                        ),
+                                                        span: Span {
+                                                            start: 234,
+                                                            end: 239,
+                                                        },
+                                                    },
+                                                    ty: Named {
+                                                        path: [
+                                                            "Vec",
+                                                        ],
+                                                        generics: [
+                                                            Named {
+                                                                path: [
+                                                                    "String",
+                                                                ],
+                                                                generics: [],
+                                                            },
+                                                        ],
+                                                    },
+                                                    value: Some(
+                                                        HirExpr {
+                                                            kind: MethodCall {
+                                                                receiver: HirExpr {
+                                                                    kind: MethodCall {
+                                                                        receiver: HirExpr {
+                                                                            kind: Path(
+                                                                                [
+                                                                                    "line",
+                                                                                ],
+                                                                            ),
+                                                                            ty: Named {
+                                                                                path: [
+                                                                                    "String",
+                                                                                ],
+                                                                                generics: [],
+                                                                            },
+                                                                            span: Span {
+                                                                                start: 255,
+                                                                                end: 259,
+                                                                            },
+                                                                        },
+                                                                        method: "split",
+                                                                        args: [
+                                                                            HirExpr {
+                                                                                kind: Literal(
+                                                                                    Char(
+                                                                                        ',',
+                                                                                    ),
+                                                                                ),
+                                                                                ty: Primitive(
+                                                                                    Char,
+                                                                                ),
+                                                                                span: Span {
+                                                                                    start: 266,
+                                                                                    end: 269,
+                                                                                },
+                                                                            },
+                                                                        ],
+                                                                    },
+                                                                    ty: Unresolved,
+                                                                    span: Span {
+                                                                        start: 255,
+                                                                        end: 270,
+                                                                    },
+                                                                },
+                                                                method: "collect",
+                                                                args: [],
+                                                            },
+                                                            ty: Unresolved,
+                                                            span: Span {
+                                                                start: 255,
+                                                                end: 280,
+                                                            },
+                                                        },
+                                                    ),
+                                                },
+                                                span: Span {
+                                                    start: 230,
+                                                    end: 281,
+                                                },
+                                            },
+                                            HirStmt {
+                                                kind: Let {
+                                                    pattern: HirPattern {
+                                                        kind: Ident(
+                                                            "name",
+                                                        ),
+                                                        span: Span {
+                                                            start: 294,
+                                                            end: 298,
+                                                        },
+                                                    },
+                                                    ty: Named {
+                                                        path: [
+                                                            "String",
+                                                        ],
+                                                        generics: [],
+                                                    },
+                                                    value: Some(
+                                                        HirExpr {
+                                                            kind: Index {
+                                                                receiver: HirExpr {
+                                                                    kind: Path(
+                                                                        [
+                                                                            "parts",
+                                                                        ],
+                                                                    ),
+                                                                    ty: Named {
+                                                                        path: [
+                                                                            "Vec",
+                                                                        ],
+                                                                        generics: [
+                                                                            Named {
+                                                                                path: [
+                                                                                    "String",
+                                                                                ],
+                                                                                generics: [],
+                                                                            },
+                                                                        ],
+                                                                    },
+                                                                    span: Span {
+                                                                        start: 309,
+                                                                        end: 314,
+                                                                    },
+                                                                },
+                                                                index: HirExpr {
+                                                                    kind: Literal(
+                                                                        Int(
+                                                                            "0",
+                                                                        ),
+                                                                    ),
+                                                                    ty: Unresolved,
+                                                                    span: Span {
+                                                                        start: 315,
+                                                                        end: 316,
+                                                                    },
+                                                                },
+                                                            },
+                                                            ty: Unresolved,
+                                                            span: Span {
+                                                                start: 309,
+                                                                end: 317,
+                                                            },
+                                                        },
+                                                    ),
+                                                },
+                                                span: Span {
+                                                    start: 290,
+                                                    end: 318,
+                                                },
+                                            },
+                                            HirStmt {
+                                                kind: Let {
+                                                    pattern: HirPattern {
+                                                        kind: Ident(
+                                                            "age",
+                                                        ),
+                                                        span: Span {
+                                                            start: 331,
+                                                            end: 334,
+                                                        },
+                                                    },
+                                                    ty: Primitive(
+                                                        I32,
+                                                    ),
+                                                    value: Some(
+                                                        HirExpr {
+                                                            kind: MethodCall {
+                                                                receiver: HirExpr {
+                                                                    kind: Index {
+                                                                        receiver: HirExpr {
+                                                                            kind: Path(
+                                                                                [
+                                                                                    "parts",
+                                                                                ],
+                                                                            ),
+                                                                            ty: Named {
+                                                                                path: [
+                                                                                    "Vec",
+                                                                                ],
+                                                                                generics: [
+                                                                                    Named {
+                                                                                        path: [
+                                                                                            "String",
+                                                                                        ],
+                                                                                        generics: [],
+                                                                                    },
+                                                                                ],
+                                                                            },
+                                                                            span: Span {
+                                                                                start: 342,
+                                                                                end: 347,
+                                                                            },
+                                                                        },
+                                                                        index: HirExpr {
+                                                                            kind: Literal(
+                                                                                Int(
+                                                                                    "1",
+                                                                                ),
+                                                                            ),
+                                                                            ty: Unresolved,
+                                                                            span: Span {
+                                                                                start: 348,
+                                                                                end: 349,
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                    ty: Unresolved,
+                                                                    span: Span {
+                                                                        start: 342,
+                                                                        end: 350,
+                                                                    },
+                                                                },
+                                                                method: "parse",
+                                                                args: [],
+                                                            },
+                                                            ty: Unresolved,
+                                                            span: Span {
+                                                                start: 342,
+                                                                end: 358,
+                                                            },
+                                                        },
+                                                    ),
+                                                },
+                                                span: Span {
+                                                    start: 327,
+                                                    end: 359,
+                                                },
+                                            },
+                                            HirStmt {
+                                                kind: Expr(
+                                                    HirExpr {
+                                                        kind: MethodCall {
+                                                            receiver: HirExpr {
+                                                                kind: Path(
+                                                                    [
+                                                                        "users",
+                                                                    ],
+                                                                ),
+                                                                ty: Named {
+                                                                    path: [
+                                                                        "Vec",
+                                                                    ],
+                                                                    generics: [
+                                                                        Named {
+                                                                            path: [
+                                                                                "User",
+                                                                            ],
+                                                                            generics: [],
+                                                                        },
+                                                                    ],
+                                                                },
+                                                                span: Span {
+                                                                    start: 368,
+                                                                    end: 373,
+                                                                },
+                                                            },
+                                                            method: "push",
+                                                            args: [
+                                                                HirExpr {
+                                                                    kind: FnCall {
+                                                                        func: HirExpr {
+                                                                            kind: Path(
+                                                                                [
+                                                                                    "User",
+                                                                                    "new",
+                                                                                ],
+                                                                            ),
+                                                                            ty: Unresolved,
+                                                                            span: Span {
+                                                                                start: 379,
+                                                                                end: 388,
+                                                                            },
+                                                                        },
+                                                                        args: [
+                                                                            HirExpr {
+                                                                                kind: Path(
+                                                                                    [
+                                                                                        "name",
+                                                                                    ],
+                                                                                ),
+                                                                                ty: Named {
+                                                                                    path: [
+                                                                                        "String",
+                                                                                    ],
+                                                                                    generics: [],
+                                                                                },
+                                                                                span: Span {
+                                                                                    start: 389,
+                                                                                    end: 393,
+                                                                                },
+                                                                            },
+                                                                            HirExpr {
+                                                                                kind: Path(
+                                                                                    [
+                                                                                        "age",
+                                                                                    ],
+                                                                                ),
+                                                                                ty: Primitive(
+                                                                                    I32,
+                                                                                ),
+                                                                                span: Span {
+                                                                                    start: 395,
+                                                                                    end: 398,
+                                                                                },
+                                                                            },
+                                                                        ],
+                                                                    },
+                                                                    ty: Unresolved,
+                                                                    span: Span {
+                                                                        start: 379,
+                                                                        end: 399,
+                                                                    },
+                                                                },
+                                                            ],
+                                                        },
+                                                        ty: Unresolved,
+                                                        span: Span {
+                                                            start: 368,
+                                                            end: 400,
+                                                        },
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    start: 368,
+                                                    end: 401,
+                                                },
+                                            },
+                                        ],
+                                        tail_expr: None,
+                                        span: Span {
+                                            start: 220,
+                                            end: 407,
+                                        },
+                                    },
+                                },
+                                span: Span {
+                                    start: 194,
+                                    end: 407,
+                                },
+                            },
+                        ],
+                        tail_expr: Some(
+                            HirExpr {
+                                kind: Path(
+                                    [
+                                        "users",
+                                    ],
+                                ),
+                                ty: Named {
+                                    path: [
+                                        "Vec",
+                                    ],
+                                    generics: [
+                                        Named {
+                                            path: [
+                                                "User",
+                                            ],
+                                            generics: [],
+                                        },
+                                    ],
+                                },
+                                span: Span {
+                                    start: 412,
+                                    end: 417,
+                                },
+                            },
+                        ),
+                        span: Span {
+                            start: 41,
+                            end: 419,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 419,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 419,
+            },
+        },
+    ],
+}

@@ -1,0 +1,12 @@
+=== Analysis: examples\06_struct_impl.nanachi ===
+
+--- User::greet ---
+  self_sig: Ref
+
+--- User::new ---
+  param age: Owned
+  param name: Owned
+
+--- User::grow ---
+  self_sig: RefMut
+

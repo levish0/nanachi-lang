@@ -1,0 +1,7 @@
+=== Analysis: examples\09_control_flow.nanachi ===
+
+--- control_flow ---
+  mutable_vars: ["count"]
+  call_sites: 1 total
+    @155..162: fallible=false, actions=[Borrow]
+

@@ -1,0 +1,52 @@
+=== MIR: examples\01_hello.nanachi ===
+MirProgram {
+    bodies: [
+        MirBody {
+            name: "main",
+            owner: None,
+            is_async: false,
+            locals: [
+                LocalDecl {
+                    name: "_0",
+                    ty: Unit,
+                    kind: ReturnPlace,
+                    span: Span {
+                        start: 0,
+                        end: 46,
+                    },
+                },
+            ],
+            blocks: [
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: MacroCall {
+                                path: [
+                                    "println",
+                                ],
+                                args: [],
+                            },
+                            span: Span {
+                                start: 16,
+                                end: 43,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Return,
+                        span: Span {
+                            start: 10,
+                            end: 46,
+                        },
+                    },
+                },
+            ],
+            arg_count: 0,
+            return_ty: Unit,
+            span: Span {
+                start: 0,
+                end: 46,
+            },
+        },
+    ],
+}

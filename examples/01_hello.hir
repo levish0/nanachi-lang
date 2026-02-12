@@ -1,0 +1,57 @@
+=== HIR: examples\01_hello.nanachi ===
+HirProgram {
+    items: [
+        HirItem {
+            kind: Function(
+                HirFunction {
+                    visibility: Private,
+                    is_async: false,
+                    name: "main",
+                    generics: [],
+                    params: [],
+                    return_ty: Unit,
+                    where_clause: [],
+                    body: HirBlock {
+                        stmts: [
+                            HirStmt {
+                                kind: Expr(
+                                    HirExpr {
+                                        kind: MacroCall {
+                                            path: [
+                                                "println",
+                                            ],
+                                            delimiter: Paren,
+                                            tokens: "\"Hello, nanachi!\"",
+                                        },
+                                        ty: Unresolved,
+                                        span: Span {
+                                            start: 16,
+                                            end: 43,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 16,
+                                    end: 44,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 10,
+                            end: 46,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 46,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 46,
+            },
+        },
+    ],
+}

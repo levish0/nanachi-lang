@@ -1,0 +1,394 @@
+=== MIR: examples\07_enum_match.nanachi ===
+MirProgram {
+    bodies: [
+        MirBody {
+            name: "area",
+            owner: None,
+            is_async: false,
+            locals: [
+                LocalDecl {
+                    name: "_0",
+                    ty: Primitive(
+                        F64,
+                    ),
+                    kind: ReturnPlace,
+                    span: Span {
+                        start: 87,
+                        end: 268,
+                    },
+                },
+                LocalDecl {
+                    name: "shape",
+                    ty: Named {
+                        path: [
+                            "Shape",
+                        ],
+                        generics: [],
+                    },
+                    kind: Param,
+                    span: Span {
+                        start: 95,
+                        end: 107,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp0",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 122,
+                        end: 266,
+                    },
+                },
+                LocalDecl {
+                    name: "radius",
+                    ty: Unresolved,
+                    kind: UserVar,
+                    span: Span {
+                        start: 160,
+                        end: 166,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp1",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 172,
+                        end: 188,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp2",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 172,
+                        end: 197,
+                    },
+                },
+                LocalDecl {
+                    name: "width",
+                    ty: Unresolved,
+                    kind: UserVar,
+                    span: Span {
+                        start: 226,
+                        end: 231,
+                    },
+                },
+                LocalDecl {
+                    name: "height",
+                    ty: Unresolved,
+                    kind: UserVar,
+                    span: Span {
+                        start: 233,
+                        end: 239,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp3",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 245,
+                        end: 259,
+                    },
+                },
+            ],
+            blocks: [
+                BasicBlock {
+                    statements: [],
+                    terminator: Terminator {
+                        kind: SwitchInt {
+                            discr: Place(
+                                Place {
+                                    local: Local(
+                                        1,
+                                    ),
+                                    projection: [],
+                                },
+                            ),
+                            targets: [
+                                (
+                                    Pattern(
+                                        HirPattern {
+                                            kind: Struct {
+                                                path: [
+                                                    "Shape",
+                                                    "Circle",
+                                                ],
+                                                fields: [
+                                                    HirFieldPattern {
+                                                        name: "radius",
+                                                        pattern: None,
+                                                        span: Span {
+                                                            start: 160,
+                                                            end: 166,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            span: Span {
+                                                start: 144,
+                                                end: 168,
+                                            },
+                                        },
+                                    ),
+                                    BlockId(
+                                        1,
+                                    ),
+                                ),
+                                (
+                                    Pattern(
+                                        HirPattern {
+                                            kind: Struct {
+                                                path: [
+                                                    "Shape",
+                                                    "Rectangle",
+                                                ],
+                                                fields: [
+                                                    HirFieldPattern {
+                                                        name: "width",
+                                                        pattern: None,
+                                                        span: Span {
+                                                            start: 226,
+                                                            end: 231,
+                                                        },
+                                                    },
+                                                    HirFieldPattern {
+                                                        name: "height",
+                                                        pattern: None,
+                                                        span: Span {
+                                                            start: 233,
+                                                            end: 239,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            span: Span {
+                                                start: 207,
+                                                end: 241,
+                                            },
+                                        },
+                                    ),
+                                    BlockId(
+                                        2,
+                                    ),
+                                ),
+                            ],
+                            otherwise: BlockId(
+                                3,
+                            ),
+                        },
+                        span: Span {
+                            start: 122,
+                            end: 266,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        4,
+                                    ),
+                                    projection: [],
+                                },
+                                BinaryOp {
+                                    op: Mul,
+                                    left: Constant(
+                                        Float(
+                                            "3.14159",
+                                        ),
+                                    ),
+                                    right: Place(
+                                        Place {
+                                            local: Local(
+                                                3,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                },
+                            ),
+                            span: Span {
+                                start: 172,
+                                end: 188,
+                            },
+                        },
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        5,
+                                    ),
+                                    projection: [],
+                                },
+                                BinaryOp {
+                                    op: Mul,
+                                    left: Place(
+                                        Place {
+                                            local: Local(
+                                                4,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                    right: Place(
+                                        Place {
+                                            local: Local(
+                                                3,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                },
+                            ),
+                            span: Span {
+                                start: 172,
+                                end: 197,
+                            },
+                        },
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        2,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Place(
+                                        Place {
+                                            local: Local(
+                                                5,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 144,
+                                end: 197,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                4,
+                            ),
+                        ),
+                        span: Span {
+                            start: 144,
+                            end: 197,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        8,
+                                    ),
+                                    projection: [],
+                                },
+                                BinaryOp {
+                                    op: Mul,
+                                    left: Place(
+                                        Place {
+                                            local: Local(
+                                                6,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                    right: Place(
+                                        Place {
+                                            local: Local(
+                                                7,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                },
+                            ),
+                            span: Span {
+                                start: 245,
+                                end: 259,
+                            },
+                        },
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        2,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Place(
+                                        Place {
+                                            local: Local(
+                                                8,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 207,
+                                end: 259,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                4,
+                            ),
+                        ),
+                        span: Span {
+                            start: 207,
+                            end: 259,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [],
+                    terminator: Terminator {
+                        kind: Unreachable,
+                        span: Span {
+                            start: 122,
+                            end: 266,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [],
+                    terminator: Terminator {
+                        kind: Return,
+                        span: Span {
+                            start: 116,
+                            end: 268,
+                        },
+                    },
+                },
+            ],
+            arg_count: 1,
+            return_ty: Primitive(
+                F64,
+            ),
+            span: Span {
+                start: 87,
+                end: 268,
+            },
+        },
+    ],
+}

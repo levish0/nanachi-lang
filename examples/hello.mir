@@ -1,0 +1,82 @@
+=== MIR: examples\hello.nanachi ===
+MirProgram {
+    bodies: [
+        MirBody {
+            name: "main",
+            owner: None,
+            is_async: false,
+            locals: [
+                LocalDecl {
+                    name: "_0",
+                    ty: Unit,
+                    kind: ReturnPlace,
+                    span: Span {
+                        start: 0,
+                        end: 76,
+                    },
+                },
+                LocalDecl {
+                    name: "x",
+                    ty: Unresolved,
+                    kind: UserVar,
+                    span: Span {
+                        start: 16,
+                        end: 27,
+                    },
+                },
+            ],
+            blocks: [
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        1,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Int(
+                                            "42",
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 16,
+                                end: 27,
+                            },
+                        },
+                        Statement {
+                            kind: MacroCall {
+                                path: [
+                                    "println",
+                                ],
+                                args: [],
+                            },
+                            span: Span {
+                                start: 32,
+                                end: 73,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Return,
+                        span: Span {
+                            start: 10,
+                            end: 76,
+                        },
+                    },
+                },
+            ],
+            arg_count: 0,
+            return_ty: Unit,
+            span: Span {
+                start: 0,
+                end: 76,
+            },
+        },
+    ],
+}

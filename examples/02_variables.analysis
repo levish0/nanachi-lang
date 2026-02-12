@@ -1,0 +1,5 @@
+=== Analysis: examples\02_variables.nanachi ===
+
+--- variables ---
+  mutable_vars: ["x"]
+

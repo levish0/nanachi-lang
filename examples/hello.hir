@@ -1,0 +1,89 @@
+=== HIR: examples\hello.nanachi ===
+HirProgram {
+    items: [
+        HirItem {
+            kind: Function(
+                HirFunction {
+                    visibility: Private,
+                    is_async: false,
+                    name: "main",
+                    generics: [],
+                    params: [],
+                    return_ty: Unit,
+                    where_clause: [],
+                    body: HirBlock {
+                        stmts: [
+                            HirStmt {
+                                kind: Let {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "x",
+                                        ),
+                                        span: Span {
+                                            start: 20,
+                                            end: 21,
+                                        },
+                                    },
+                                    ty: Unresolved,
+                                    value: Some(
+                                        HirExpr {
+                                            kind: Literal(
+                                                Int(
+                                                    "42",
+                                                ),
+                                            ),
+                                            ty: Unresolved,
+                                            span: Span {
+                                                start: 24,
+                                                end: 26,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 16,
+                                    end: 27,
+                                },
+                            },
+                            HirStmt {
+                                kind: Expr(
+                                    HirExpr {
+                                        kind: MacroCall {
+                                            path: [
+                                                "println",
+                                            ],
+                                            delimiter: Paren,
+                                            tokens: "\"Hello from nanachi! x = {}\" , x",
+                                        },
+                                        ty: Unresolved,
+                                        span: Span {
+                                            start: 32,
+                                            end: 73,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 32,
+                                    end: 74,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 10,
+                            end: 76,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 76,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 76,
+            },
+        },
+    ],
+}

@@ -1,0 +1,289 @@
+=== AST: examples\08_trait_generic.nanachi ===
+Program {
+    items: [
+        Item {
+            kind: Trait(
+                TraitItem {
+                    visibility: Private,
+                    name: "Printable",
+                    generics: [],
+                    methods: [
+                        TraitMethod {
+                            name: "to_string",
+                            generics: [],
+                            params: [
+                                FnParam {
+                                    kind: SelfParam,
+                                    span: Span {
+                                        start: 35,
+                                        end: 39,
+                                    },
+                                },
+                            ],
+                            return_ty: Some(
+                                TypeExpr {
+                                    kind: Named {
+                                        path: Path {
+                                            segments: [
+                                                "String",
+                                            ],
+                                            span: Span {
+                                                start: 44,
+                                                end: 50,
+                                            },
+                                        },
+                                        generics: [],
+                                    },
+                                    span: Span {
+                                        start: 44,
+                                        end: 50,
+                                    },
+                                },
+                            ),
+                            default_body: None,
+                            span: Span {
+                                start: 22,
+                                end: 51,
+                            },
+                        },
+                    ],
+                    span: Span {
+                        start: 0,
+                        end: 53,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 53,
+            },
+        },
+        Item {
+            kind: Impl(
+                ImplItem {
+                    generics: [],
+                    trait_name: Some(
+                        Path {
+                            segments: [
+                                "Printable",
+                            ],
+                            span: Span {
+                                start: 60,
+                                end: 69,
+                            },
+                        },
+                    ),
+                    target: TypeExpr {
+                        kind: Named {
+                            path: Path {
+                                segments: [
+                                    "User",
+                                ],
+                                span: Span {
+                                    start: 74,
+                                    end: 78,
+                                },
+                            },
+                            generics: [],
+                        },
+                        span: Span {
+                            start: 74,
+                            end: 78,
+                        },
+                    },
+                    methods: [
+                        FunctionItem {
+                            visibility: Private,
+                            is_async: false,
+                            name: "to_string",
+                            generics: [],
+                            params: [
+                                FnParam {
+                                    kind: SelfParam,
+                                    span: Span {
+                                        start: 98,
+                                        end: 102,
+                                    },
+                                },
+                            ],
+                            return_ty: Some(
+                                TypeExpr {
+                                    kind: Named {
+                                        path: Path {
+                                            segments: [
+                                                "String",
+                                            ],
+                                            span: Span {
+                                                start: 107,
+                                                end: 113,
+                                            },
+                                        },
+                                        generics: [],
+                                    },
+                                    span: Span {
+                                        start: 107,
+                                        end: 113,
+                                    },
+                                },
+                            ),
+                            where_clause: [],
+                            body: Block {
+                                stmts: [],
+                                tail_expr: Some(
+                                    Expr {
+                                        kind: MacroCall {
+                                            path: Path {
+                                                segments: [
+                                                    "format",
+                                                ],
+                                                span: Span {
+                                                    start: 124,
+                                                    end: 130,
+                                                },
+                                            },
+                                            delimiter: Paren,
+                                            tokens: "\"{} (age {})\" , self . name , self . age",
+                                        },
+                                        span: Span {
+                                            start: 124,
+                                            end: 167,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 114,
+                                    end: 173,
+                                },
+                            },
+                            span: Span {
+                                start: 85,
+                                end: 173,
+                            },
+                        },
+                    ],
+                    span: Span {
+                        start: 55,
+                        end: 175,
+                    },
+                },
+            ),
+            span: Span {
+                start: 55,
+                end: 175,
+            },
+        },
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "print_it",
+                    generics: [
+                        GenericParam {
+                            name: "T",
+                            bounds: [
+                                TypeExpr {
+                                    kind: Named {
+                                        path: Path {
+                                            segments: [
+                                                "Printable",
+                                            ],
+                                            span: Span {
+                                                start: 192,
+                                                end: 201,
+                                            },
+                                        },
+                                        generics: [],
+                                    },
+                                    span: Span {
+                                        start: 192,
+                                        end: 201,
+                                    },
+                                },
+                            ],
+                            span: Span {
+                                start: 189,
+                                end: 201,
+                            },
+                        },
+                    ],
+                    params: [
+                        FnParam {
+                            kind: Typed {
+                                name: "item",
+                                ty: TypeExpr {
+                                    kind: Named {
+                                        path: Path {
+                                            segments: [
+                                                "T",
+                                            ],
+                                            span: Span {
+                                                start: 209,
+                                                end: 210,
+                                            },
+                                        },
+                                        generics: [],
+                                    },
+                                    span: Span {
+                                        start: 209,
+                                        end: 210,
+                                    },
+                                },
+                            },
+                            span: Span {
+                                start: 203,
+                                end: 210,
+                            },
+                        },
+                    ],
+                    return_ty: None,
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Expr(
+                                    Expr {
+                                        kind: MacroCall {
+                                            path: Path {
+                                                segments: [
+                                                    "println",
+                                                ],
+                                                span: Span {
+                                                    start: 218,
+                                                    end: 225,
+                                                },
+                                            },
+                                            delimiter: Paren,
+                                            tokens: "\"{}\" , item . to_string ( )",
+                                        },
+                                        span: Span {
+                                            start: 218,
+                                            end: 250,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 218,
+                                    end: 251,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 212,
+                            end: 253,
+                        },
+                    },
+                    span: Span {
+                        start: 177,
+                        end: 253,
+                    },
+                },
+            ),
+            span: Span {
+                start: 177,
+                end: 253,
+            },
+        },
+    ],
+}

@@ -1,0 +1,9 @@
+fn read_config(path: String) -> String {
+    let content: String = fs::read_to_string(path);
+    content
+}
+
+fn process() {
+    let config: String = read_config("config.toml");
+    println!("{}", config);
+}

@@ -1,0 +1,17 @@
+=== Analysis: examples\12_comprehensive.nanachi ===
+
+--- load_users ---
+  param path: Ref
+  call_sites: 10 total
+    @214..219: fallible=false, actions=[Borrow]
+    @255..280: fallible=false, actions=[Borrow]
+    @379..399: fallible=false, actions=[Borrow, Borrow]
+    @178..188: fallible=false, actions=[]
+    @255..270: fallible=false, actions=[Borrow, Borrow]
+    @124..149: fallible=false, actions=[Borrow]
+    @69..93: fallible=true, actions=[Borrow]
+    @124..139: fallible=false, actions=[Borrow]
+    @368..400: fallible=false, actions=[BorrowMut, Move]
+    @342..358: fallible=false, actions=[Borrow]
+  error_info: needs_wrap=true, types=1, enum=None
+

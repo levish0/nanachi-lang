@@ -1,0 +1,62 @@
+=== AST: examples\01_hello.nanachi ===
+Program {
+    items: [
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "main",
+                    generics: [],
+                    params: [],
+                    return_ty: None,
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Expr(
+                                    Expr {
+                                        kind: MacroCall {
+                                            path: Path {
+                                                segments: [
+                                                    "println",
+                                                ],
+                                                span: Span {
+                                                    start: 16,
+                                                    end: 23,
+                                                },
+                                            },
+                                            delimiter: Paren,
+                                            tokens: "\"Hello, nanachi!\"",
+                                        },
+                                        span: Span {
+                                            start: 16,
+                                            end: 43,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 16,
+                                    end: 44,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 10,
+                            end: 46,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 46,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 46,
+            },
+        },
+    ],
+}

@@ -1,0 +1,494 @@
+=== HIR: examples\09_control_flow.nanachi ===
+HirProgram {
+    items: [
+        HirItem {
+            kind: Function(
+                HirFunction {
+                    visibility: Private,
+                    is_async: false,
+                    name: "control_flow",
+                    generics: [],
+                    params: [],
+                    return_ty: Unit,
+                    where_clause: [],
+                    body: HirBlock {
+                        stmts: [
+                            HirStmt {
+                                kind: Let {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "x",
+                                        ),
+                                        span: Span {
+                                            start: 28,
+                                            end: 29,
+                                        },
+                                    },
+                                    ty: Primitive(
+                                        I32,
+                                    ),
+                                    value: Some(
+                                        HirExpr {
+                                            kind: Literal(
+                                                Int(
+                                                    "10",
+                                                ),
+                                            ),
+                                            ty: Unresolved,
+                                            span: Span {
+                                                start: 37,
+                                                end: 39,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 24,
+                                    end: 40,
+                                },
+                            },
+                            HirStmt {
+                                kind: Let {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "abs",
+                                        ),
+                                        span: Span {
+                                            start: 49,
+                                            end: 52,
+                                        },
+                                    },
+                                    ty: Primitive(
+                                        I32,
+                                    ),
+                                    value: Some(
+                                        HirExpr {
+                                            kind: If {
+                                                condition: HirExpr {
+                                                    kind: BinaryOp {
+                                                        left: HirExpr {
+                                                            kind: Path(
+                                                                [
+                                                                    "x",
+                                                                ],
+                                                            ),
+                                                            ty: Primitive(
+                                                                I32,
+                                                            ),
+                                                            span: Span {
+                                                                start: 63,
+                                                                end: 64,
+                                                            },
+                                                        },
+                                                        op: Gt,
+                                                        right: HirExpr {
+                                                            kind: Literal(
+                                                                Int(
+                                                                    "0",
+                                                                ),
+                                                            ),
+                                                            ty: Unresolved,
+                                                            span: Span {
+                                                                start: 67,
+                                                                end: 68,
+                                                            },
+                                                        },
+                                                    },
+                                                    ty: Unresolved,
+                                                    span: Span {
+                                                        start: 63,
+                                                        end: 68,
+                                                    },
+                                                },
+                                                then_block: HirBlock {
+                                                    stmts: [],
+                                                    tail_expr: Some(
+                                                        HirExpr {
+                                                            kind: Path(
+                                                                [
+                                                                    "x",
+                                                                ],
+                                                            ),
+                                                            ty: Primitive(
+                                                                I32,
+                                                            ),
+                                                            span: Span {
+                                                                start: 71,
+                                                                end: 72,
+                                                            },
+                                                        },
+                                                    ),
+                                                    span: Span {
+                                                        start: 69,
+                                                        end: 74,
+                                                    },
+                                                },
+                                                else_expr: Some(
+                                                    HirExpr {
+                                                        kind: Block(
+                                                            HirBlock {
+                                                                stmts: [],
+                                                                tail_expr: Some(
+                                                                    HirExpr {
+                                                                        kind: UnaryOp {
+                                                                            op: Neg,
+                                                                            operand: HirExpr {
+                                                                                kind: Path(
+                                                                                    [
+                                                                                        "x",
+                                                                                    ],
+                                                                                ),
+                                                                                ty: Primitive(
+                                                                                    I32,
+                                                                                ),
+                                                                                span: Span {
+                                                                                    start: 83,
+                                                                                    end: 84,
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                        ty: Unresolved,
+                                                                        span: Span {
+                                                                            start: 82,
+                                                                            end: 84,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                                span: Span {
+                                                                    start: 80,
+                                                                    end: 86,
+                                                                },
+                                                            },
+                                                        ),
+                                                        ty: Unresolved,
+                                                        span: Span {
+                                                            start: 80,
+                                                            end: 86,
+                                                        },
+                                                    },
+                                                ),
+                                            },
+                                            ty: Unresolved,
+                                            span: Span {
+                                                start: 60,
+                                                end: 86,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 45,
+                                    end: 87,
+                                },
+                            },
+                            HirStmt {
+                                kind: Let {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "numbers",
+                                        ),
+                                        span: Span {
+                                            start: 96,
+                                            end: 103,
+                                        },
+                                    },
+                                    ty: Named {
+                                        path: [
+                                            "Vec",
+                                        ],
+                                        generics: [
+                                            Primitive(
+                                                I32,
+                                            ),
+                                        ],
+                                    },
+                                    value: Some(
+                                        HirExpr {
+                                            kind: MacroCall {
+                                                path: [
+                                                    "vec",
+                                                ],
+                                                delimiter: Bracket,
+                                                tokens: "1 , 2 , 3 , 4 , 5",
+                                            },
+                                            ty: Unresolved,
+                                            span: Span {
+                                                start: 116,
+                                                end: 135,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 92,
+                                    end: 136,
+                                },
+                            },
+                            HirStmt {
+                                kind: For {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "n",
+                                        ),
+                                        span: Span {
+                                            start: 145,
+                                            end: 146,
+                                        },
+                                    },
+                                    iter_ty: Primitive(
+                                        I32,
+                                    ),
+                                    iter: HirExpr {
+                                        kind: Path(
+                                            [
+                                                "numbers",
+                                            ],
+                                        ),
+                                        ty: Named {
+                                            path: [
+                                                "Vec",
+                                            ],
+                                            generics: [
+                                                Primitive(
+                                                    I32,
+                                                ),
+                                            ],
+                                        },
+                                        span: Span {
+                                            start: 155,
+                                            end: 162,
+                                        },
+                                    },
+                                    body: HirBlock {
+                                        stmts: [
+                                            HirStmt {
+                                                kind: Expr(
+                                                    HirExpr {
+                                                        kind: MacroCall {
+                                                            path: [
+                                                                "println",
+                                                            ],
+                                                            delimiter: Paren,
+                                                            tokens: "\"{}\" , n",
+                                                        },
+                                                        ty: Unresolved,
+                                                        span: Span {
+                                                            start: 173,
+                                                            end: 190,
+                                                        },
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    start: 173,
+                                                    end: 191,
+                                                },
+                                            },
+                                        ],
+                                        tail_expr: None,
+                                        span: Span {
+                                            start: 163,
+                                            end: 197,
+                                        },
+                                    },
+                                },
+                                span: Span {
+                                    start: 141,
+                                    end: 197,
+                                },
+                            },
+                            HirStmt {
+                                kind: Expr(
+                                    HirExpr {
+                                        kind: MacroCall {
+                                            path: [
+                                                "println",
+                                            ],
+                                            delimiter: Paren,
+                                            tokens: "\"len: {}\" , numbers . len ( )",
+                                        },
+                                        ty: Unresolved,
+                                        span: Span {
+                                            start: 202,
+                                            end: 236,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 202,
+                                    end: 237,
+                                },
+                            },
+                            HirStmt {
+                                kind: Let {
+                                    pattern: HirPattern {
+                                        kind: Ident(
+                                            "count",
+                                        ),
+                                        span: Span {
+                                            start: 246,
+                                            end: 251,
+                                        },
+                                    },
+                                    ty: Primitive(
+                                        I32,
+                                    ),
+                                    value: Some(
+                                        HirExpr {
+                                            kind: Literal(
+                                                Int(
+                                                    "0",
+                                                ),
+                                            ),
+                                            ty: Unresolved,
+                                            span: Span {
+                                                start: 259,
+                                                end: 260,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 242,
+                                    end: 261,
+                                },
+                            },
+                            HirStmt {
+                                kind: While {
+                                    condition: HirExpr {
+                                        kind: BinaryOp {
+                                            left: HirExpr {
+                                                kind: Path(
+                                                    [
+                                                        "count",
+                                                    ],
+                                                ),
+                                                ty: Primitive(
+                                                    I32,
+                                                ),
+                                                span: Span {
+                                                    start: 272,
+                                                    end: 277,
+                                                },
+                                            },
+                                            op: Lt,
+                                            right: HirExpr {
+                                                kind: Literal(
+                                                    Int(
+                                                        "10",
+                                                    ),
+                                                ),
+                                                ty: Unresolved,
+                                                span: Span {
+                                                    start: 280,
+                                                    end: 282,
+                                                },
+                                            },
+                                        },
+                                        ty: Unresolved,
+                                        span: Span {
+                                            start: 272,
+                                            end: 282,
+                                        },
+                                    },
+                                    body: HirBlock {
+                                        stmts: [
+                                            HirStmt {
+                                                kind: Expr(
+                                                    HirExpr {
+                                                        kind: Assign {
+                                                            target: HirExpr {
+                                                                kind: Path(
+                                                                    [
+                                                                        "count",
+                                                                    ],
+                                                                ),
+                                                                ty: Primitive(
+                                                                    I32,
+                                                                ),
+                                                                span: Span {
+                                                                    start: 293,
+                                                                    end: 298,
+                                                                },
+                                                            },
+                                                            value: HirExpr {
+                                                                kind: BinaryOp {
+                                                                    left: HirExpr {
+                                                                        kind: Path(
+                                                                            [
+                                                                                "count",
+                                                                            ],
+                                                                        ),
+                                                                        ty: Primitive(
+                                                                            I32,
+                                                                        ),
+                                                                        span: Span {
+                                                                            start: 301,
+                                                                            end: 306,
+                                                                        },
+                                                                    },
+                                                                    op: Add,
+                                                                    right: HirExpr {
+                                                                        kind: Literal(
+                                                                            Int(
+                                                                                "1",
+                                                                            ),
+                                                                        ),
+                                                                        ty: Unresolved,
+                                                                        span: Span {
+                                                                            start: 309,
+                                                                            end: 310,
+                                                                        },
+                                                                    },
+                                                                },
+                                                                ty: Unresolved,
+                                                                span: Span {
+                                                                    start: 301,
+                                                                    end: 310,
+                                                                },
+                                                            },
+                                                        },
+                                                        ty: Unit,
+                                                        span: Span {
+                                                            start: 293,
+                                                            end: 310,
+                                                        },
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    start: 293,
+                                                    end: 311,
+                                                },
+                                            },
+                                        ],
+                                        tail_expr: None,
+                                        span: Span {
+                                            start: 283,
+                                            end: 317,
+                                        },
+                                    },
+                                },
+                                span: Span {
+                                    start: 266,
+                                    end: 317,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 18,
+                            end: 319,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 319,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 319,
+            },
+        },
+    ],
+}

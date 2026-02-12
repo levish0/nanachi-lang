@@ -1,0 +1,1054 @@
+=== MIR: examples\05_option.nanachi ===
+MirProgram {
+    bodies: [
+        MirBody {
+            name: "find_user",
+            owner: None,
+            is_async: false,
+            locals: [
+                LocalDecl {
+                    name: "_0",
+                    ty: Option(
+                        Named {
+                            path: [
+                                "User",
+                            ],
+                            generics: [],
+                        },
+                    ),
+                    kind: ReturnPlace,
+                    span: Span {
+                        start: 0,
+                        end: 130,
+                    },
+                },
+                LocalDecl {
+                    name: "id",
+                    ty: Primitive(
+                        I32,
+                    ),
+                    kind: Param,
+                    span: Span {
+                        start: 13,
+                        end: 20,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp0",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 40,
+                        end: 47,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp1",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 37,
+                        end: 128,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp2",
+                    ty: Named {
+                        path: [
+                            "User",
+                        ],
+                        generics: [],
+                    },
+                    kind: Temp,
+                    span: Span {
+                        start: 63,
+                        end: 95,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp3",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 58,
+                        end: 96,
+                    },
+                },
+            ],
+            blocks: [
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        2,
+                                    ),
+                                    projection: [],
+                                },
+                                BinaryOp {
+                                    op: Eq,
+                                    left: Place(
+                                        Place {
+                                            local: Local(
+                                                1,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                    right: Constant(
+                                        Int(
+                                            "1",
+                                        ),
+                                    ),
+                                },
+                            ),
+                            span: Span {
+                                start: 40,
+                                end: 47,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: SwitchBool {
+                            cond: Place(
+                                Place {
+                                    local: Local(
+                                        2,
+                                    ),
+                                    projection: [],
+                                },
+                            ),
+                            true_bb: BlockId(
+                                1,
+                            ),
+                            false_bb: BlockId(
+                                2,
+                            ),
+                        },
+                        span: Span {
+                            start: 40,
+                            end: 47,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        4,
+                                    ),
+                                    projection: [],
+                                },
+                                Aggregate(
+                                    Struct(
+                                        [
+                                            "User",
+                                        ],
+                                    ),
+                                    [
+                                        (
+                                            "name",
+                                            Constant(
+                                                String(
+                                                    "nanachi",
+                                                ),
+                                            ),
+                                        ),
+                                        (
+                                            "age",
+                                            Constant(
+                                                Int(
+                                                    "3",
+                                                ),
+                                            ),
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            span: Span {
+                                start: 63,
+                                end: 95,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Call {
+                            func: Constant(
+                                Path(
+                                    [
+                                        "Some",
+                                    ],
+                                ),
+                            ),
+                            args: [
+                                Place(
+                                    Place {
+                                        local: Local(
+                                            4,
+                                        ),
+                                        projection: [],
+                                    },
+                                ),
+                            ],
+                            dest: Place {
+                                local: Local(
+                                    5,
+                                ),
+                                projection: [],
+                            },
+                            target: BlockId(
+                                4,
+                            ),
+                        },
+                        span: Span {
+                            start: 58,
+                            end: 96,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        3,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Path(
+                                            [
+                                                "None",
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 37,
+                                end: 128,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                3,
+                            ),
+                        ),
+                        span: Span {
+                            start: 37,
+                            end: 128,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [],
+                    terminator: Terminator {
+                        kind: Return,
+                        span: Span {
+                            start: 31,
+                            end: 130,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        3,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Place(
+                                        Place {
+                                            local: Local(
+                                                5,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 48,
+                                end: 102,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                3,
+                            ),
+                        ),
+                        span: Span {
+                            start: 48,
+                            end: 102,
+                        },
+                    },
+                },
+            ],
+            arg_count: 1,
+            return_ty: Option(
+                Named {
+                    path: [
+                        "User",
+                    ],
+                    generics: [],
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 130,
+            },
+        },
+        MirBody {
+            name: "option_example",
+            owner: None,
+            is_async: false,
+            locals: [
+                LocalDecl {
+                    name: "_0",
+                    ty: Unit,
+                    kind: ReturnPlace,
+                    span: Span {
+                        start: 132,
+                        end: 279,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp0",
+                    ty: Option(
+                        Named {
+                            path: [
+                                "User",
+                            ],
+                            generics: [],
+                        },
+                    ),
+                    kind: Temp,
+                    span: Span {
+                        start: 176,
+                        end: 189,
+                    },
+                },
+                LocalDecl {
+                    name: "user",
+                    ty: Option(
+                        Named {
+                            path: [
+                                "User",
+                            ],
+                            generics: [],
+                        },
+                    ),
+                    kind: UserVar,
+                    span: Span {
+                        start: 158,
+                        end: 190,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp1",
+                    ty: Option(
+                        Named {
+                            path: [
+                                "User",
+                            ],
+                            generics: [],
+                        },
+                    ),
+                    kind: Temp,
+                    span: Span {
+                        start: 215,
+                        end: 227,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp2",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 215,
+                        end: 233,
+                    },
+                },
+                LocalDecl {
+                    name: "name",
+                    ty: Option(
+                        Named {
+                            path: [
+                                "String",
+                            ],
+                            generics: [],
+                        },
+                    ),
+                    kind: UserVar,
+                    span: Span {
+                        start: 195,
+                        end: 234,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp3",
+                    ty: Option(
+                        Named {
+                            path: [
+                                "User",
+                            ],
+                            generics: [],
+                        },
+                    ),
+                    kind: Temp,
+                    span: Span {
+                        start: 254,
+                        end: 266,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp4",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 254,
+                        end: 271,
+                    },
+                },
+                LocalDecl {
+                    name: "_tmp5",
+                    ty: Unresolved,
+                    kind: Temp,
+                    span: Span {
+                        start: 254,
+                        end: 276,
+                    },
+                },
+                LocalDecl {
+                    name: "age",
+                    ty: Primitive(
+                        I32,
+                    ),
+                    kind: UserVar,
+                    span: Span {
+                        start: 239,
+                        end: 277,
+                    },
+                },
+            ],
+            blocks: [
+                BasicBlock {
+                    statements: [],
+                    terminator: Terminator {
+                        kind: Call {
+                            func: Constant(
+                                Path(
+                                    [
+                                        "find_user",
+                                    ],
+                                ),
+                            ),
+                            args: [
+                                Constant(
+                                    Int(
+                                        "42",
+                                    ),
+                                ),
+                            ],
+                            dest: Place {
+                                local: Local(
+                                    1,
+                                ),
+                                projection: [],
+                            },
+                            target: BlockId(
+                                1,
+                            ),
+                        },
+                        span: Span {
+                            start: 176,
+                            end: 189,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        2,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Place(
+                                        Place {
+                                            local: Local(
+                                                1,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 158,
+                                end: 190,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Call {
+                            func: Constant(
+                                Path(
+                                    [
+                                        "find_user",
+                                    ],
+                                ),
+                            ),
+                            args: [
+                                Constant(
+                                    Int(
+                                        "1",
+                                    ),
+                                ),
+                            ],
+                            dest: Place {
+                                local: Local(
+                                    3,
+                                ),
+                                projection: [],
+                            },
+                            target: BlockId(
+                                2,
+                            ),
+                        },
+                        span: Span {
+                            start: 215,
+                            end: 227,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [],
+                    terminator: Terminator {
+                        kind: SwitchInt {
+                            discr: Place(
+                                Place {
+                                    local: Local(
+                                        3,
+                                    ),
+                                    projection: [],
+                                },
+                            ),
+                            targets: [
+                                (
+                                    Pattern(
+                                        HirPattern {
+                                            kind: TupleStruct {
+                                                path: [
+                                                    "Some",
+                                                ],
+                                                fields: [
+                                                    HirPattern {
+                                                        kind: Wildcard,
+                                                        span: Span {
+                                                            start: 215,
+                                                            end: 233,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            span: Span {
+                                                start: 215,
+                                                end: 233,
+                                            },
+                                        },
+                                    ),
+                                    BlockId(
+                                        3,
+                                    ),
+                                ),
+                            ],
+                            otherwise: BlockId(
+                                4,
+                            ),
+                        },
+                        span: Span {
+                            start: 215,
+                            end: 233,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        4,
+                                    ),
+                                    projection: [],
+                                },
+                                Aggregate(
+                                    Struct(
+                                        [
+                                            "Some",
+                                        ],
+                                    ),
+                                    [
+                                        (
+                                            "0",
+                                            Place(
+                                                Place {
+                                                    local: Local(
+                                                        3,
+                                                    ),
+                                                    projection: [
+                                                        Field(
+                                                            "name",
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            span: Span {
+                                start: 215,
+                                end: 233,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                5,
+                            ),
+                        ),
+                        span: Span {
+                            start: 215,
+                            end: 233,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        4,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Path(
+                                            [
+                                                "None",
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 215,
+                                end: 233,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                5,
+                            ),
+                        ),
+                        span: Span {
+                            start: 215,
+                            end: 233,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        5,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Place(
+                                        Place {
+                                            local: Local(
+                                                4,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 195,
+                                end: 234,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Call {
+                            func: Constant(
+                                Path(
+                                    [
+                                        "find_user",
+                                    ],
+                                ),
+                            ),
+                            args: [
+                                Constant(
+                                    Int(
+                                        "1",
+                                    ),
+                                ),
+                            ],
+                            dest: Place {
+                                local: Local(
+                                    6,
+                                ),
+                                projection: [],
+                            },
+                            target: BlockId(
+                                6,
+                            ),
+                        },
+                        span: Span {
+                            start: 254,
+                            end: 266,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [],
+                    terminator: Terminator {
+                        kind: SwitchInt {
+                            discr: Place(
+                                Place {
+                                    local: Local(
+                                        6,
+                                    ),
+                                    projection: [],
+                                },
+                            ),
+                            targets: [
+                                (
+                                    Pattern(
+                                        HirPattern {
+                                            kind: TupleStruct {
+                                                path: [
+                                                    "Some",
+                                                ],
+                                                fields: [
+                                                    HirPattern {
+                                                        kind: Wildcard,
+                                                        span: Span {
+                                                            start: 254,
+                                                            end: 271,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            span: Span {
+                                                start: 254,
+                                                end: 271,
+                                            },
+                                        },
+                                    ),
+                                    BlockId(
+                                        7,
+                                    ),
+                                ),
+                            ],
+                            otherwise: BlockId(
+                                8,
+                            ),
+                        },
+                        span: Span {
+                            start: 254,
+                            end: 271,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        7,
+                                    ),
+                                    projection: [],
+                                },
+                                Aggregate(
+                                    Struct(
+                                        [
+                                            "Some",
+                                        ],
+                                    ),
+                                    [
+                                        (
+                                            "0",
+                                            Place(
+                                                Place {
+                                                    local: Local(
+                                                        6,
+                                                    ),
+                                                    projection: [
+                                                        Field(
+                                                            "age",
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        ),
+                                    ],
+                                ),
+                            ),
+                            span: Span {
+                                start: 254,
+                                end: 271,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                9,
+                            ),
+                        ),
+                        span: Span {
+                            start: 254,
+                            end: 271,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        7,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Path(
+                                            [
+                                                "None",
+                                            ],
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 254,
+                                end: 271,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                9,
+                            ),
+                        ),
+                        span: Span {
+                            start: 254,
+                            end: 271,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [],
+                    terminator: Terminator {
+                        kind: SwitchInt {
+                            discr: Place(
+                                Place {
+                                    local: Local(
+                                        7,
+                                    ),
+                                    projection: [],
+                                },
+                            ),
+                            targets: [
+                                (
+                                    Pattern(
+                                        HirPattern {
+                                            kind: TupleStruct {
+                                                path: [
+                                                    "Some",
+                                                ],
+                                                fields: [
+                                                    HirPattern {
+                                                        kind: Wildcard,
+                                                        span: Span {
+                                                            start: 254,
+                                                            end: 276,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            span: Span {
+                                                start: 254,
+                                                end: 276,
+                                            },
+                                        },
+                                    ),
+                                    BlockId(
+                                        10,
+                                    ),
+                                ),
+                            ],
+                            otherwise: BlockId(
+                                11,
+                            ),
+                        },
+                        span: Span {
+                            start: 254,
+                            end: 276,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        8,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Place(
+                                        Place {
+                                            local: Local(
+                                                7,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 254,
+                                end: 276,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                12,
+                            ),
+                        ),
+                        span: Span {
+                            start: 254,
+                            end: 276,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        8,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Int(
+                                            "0",
+                                        ),
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 275,
+                                end: 276,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Goto(
+                            BlockId(
+                                12,
+                            ),
+                        ),
+                        span: Span {
+                            start: 254,
+                            end: 276,
+                        },
+                    },
+                },
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        9,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Place(
+                                        Place {
+                                            local: Local(
+                                                8,
+                                            ),
+                                            projection: [],
+                                        },
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 239,
+                                end: 277,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Return,
+                        span: Span {
+                            start: 152,
+                            end: 279,
+                        },
+                    },
+                },
+            ],
+            arg_count: 0,
+            return_ty: Unit,
+            span: Span {
+                start: 132,
+                end: 279,
+            },
+        },
+    ],
+}

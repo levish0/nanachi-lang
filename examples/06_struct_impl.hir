@@ -1,0 +1,328 @@
+=== HIR: examples\06_struct_impl.nanachi ===
+HirProgram {
+    items: [
+        HirItem {
+            kind: Struct(
+                HirStruct {
+                    visibility: Private,
+                    name: "User",
+                    generics: [],
+                    fields: [
+                        HirStructField {
+                            visibility: Private,
+                            name: "name",
+                            ty: Named {
+                                path: [
+                                    "String",
+                                ],
+                                generics: [],
+                            },
+                            span: Span {
+                                start: 18,
+                                end: 30,
+                            },
+                        },
+                        HirStructField {
+                            visibility: Private,
+                            name: "age",
+                            ty: Primitive(
+                                I32,
+                            ),
+                            span: Span {
+                                start: 36,
+                                end: 44,
+                            },
+                        },
+                    ],
+                    span: Span {
+                        start: 0,
+                        end: 47,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 47,
+            },
+        },
+        HirItem {
+            kind: Impl(
+                HirImpl {
+                    generics: [],
+                    trait_name: None,
+                    target: Named {
+                        path: [
+                            "User",
+                        ],
+                        generics: [],
+                    },
+                    methods: [
+                        HirFunction {
+                            visibility: Private,
+                            is_async: false,
+                            name: "new",
+                            generics: [],
+                            params: [
+                                HirFnParam {
+                                    kind: Typed {
+                                        name: "name",
+                                        ty: Named {
+                                            path: [
+                                                "String",
+                                            ],
+                                            generics: [],
+                                        },
+                                    },
+                                    span: Span {
+                                        start: 72,
+                                        end: 84,
+                                    },
+                                },
+                                HirFnParam {
+                                    kind: Typed {
+                                        name: "age",
+                                        ty: Primitive(
+                                            I32,
+                                        ),
+                                    },
+                                    span: Span {
+                                        start: 86,
+                                        end: 94,
+                                    },
+                                },
+                            ],
+                            return_ty: Named {
+                                path: [
+                                    "User",
+                                ],
+                                generics: [],
+                            },
+                            where_clause: [],
+                            body: HirBlock {
+                                stmts: [],
+                                tail_expr: Some(
+                                    HirExpr {
+                                        kind: StructLiteral {
+                                            path: [
+                                                "User",
+                                            ],
+                                            fields: [
+                                                HirFieldInit {
+                                                    name: "name",
+                                                    value: None,
+                                                    span: Span {
+                                                        start: 121,
+                                                        end: 125,
+                                                    },
+                                                },
+                                                HirFieldInit {
+                                                    name: "age",
+                                                    value: None,
+                                                    span: Span {
+                                                        start: 127,
+                                                        end: 130,
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                        ty: Named {
+                                            path: [
+                                                "User",
+                                            ],
+                                            generics: [],
+                                        },
+                                        span: Span {
+                                            start: 114,
+                                            end: 132,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 104,
+                                    end: 138,
+                                },
+                            },
+                            span: Span {
+                                start: 65,
+                                end: 138,
+                            },
+                        },
+                        HirFunction {
+                            visibility: Private,
+                            is_async: false,
+                            name: "greet",
+                            generics: [],
+                            params: [
+                                HirFnParam {
+                                    kind: SelfParam,
+                                    span: Span {
+                                        start: 153,
+                                        end: 157,
+                                    },
+                                },
+                            ],
+                            return_ty: Unit,
+                            where_clause: [],
+                            body: HirBlock {
+                                stmts: [
+                                    HirStmt {
+                                        kind: Expr(
+                                            HirExpr {
+                                                kind: MacroCall {
+                                                    path: [
+                                                        "println",
+                                                    ],
+                                                    delimiter: Paren,
+                                                    tokens: "\"Hi, I'm {} ({})\" , self . name , self . age",
+                                                },
+                                                ty: Unresolved,
+                                                span: Span {
+                                                    start: 169,
+                                                    end: 217,
+                                                },
+                                            },
+                                        ),
+                                        span: Span {
+                                            start: 169,
+                                            end: 218,
+                                        },
+                                    },
+                                ],
+                                tail_expr: None,
+                                span: Span {
+                                    start: 159,
+                                    end: 224,
+                                },
+                            },
+                            span: Span {
+                                start: 144,
+                                end: 224,
+                            },
+                        },
+                        HirFunction {
+                            visibility: Private,
+                            is_async: false,
+                            name: "grow",
+                            generics: [],
+                            params: [
+                                HirFnParam {
+                                    kind: SelfParam,
+                                    span: Span {
+                                        start: 238,
+                                        end: 242,
+                                    },
+                                },
+                            ],
+                            return_ty: Unit,
+                            where_clause: [],
+                            body: HirBlock {
+                                stmts: [
+                                    HirStmt {
+                                        kind: Expr(
+                                            HirExpr {
+                                                kind: Assign {
+                                                    target: HirExpr {
+                                                        kind: FieldAccess {
+                                                            receiver: HirExpr {
+                                                                kind: Path(
+                                                                    [
+                                                                        "self",
+                                                                    ],
+                                                                ),
+                                                                ty: Unresolved,
+                                                                span: Span {
+                                                                    start: 254,
+                                                                    end: 258,
+                                                                },
+                                                            },
+                                                            field: "age",
+                                                        },
+                                                        ty: Unresolved,
+                                                        span: Span {
+                                                            start: 254,
+                                                            end: 262,
+                                                        },
+                                                    },
+                                                    value: HirExpr {
+                                                        kind: BinaryOp {
+                                                            left: HirExpr {
+                                                                kind: FieldAccess {
+                                                                    receiver: HirExpr {
+                                                                        kind: Path(
+                                                                            [
+                                                                                "self",
+                                                                            ],
+                                                                        ),
+                                                                        ty: Unresolved,
+                                                                        span: Span {
+                                                                            start: 265,
+                                                                            end: 269,
+                                                                        },
+                                                                    },
+                                                                    field: "age",
+                                                                },
+                                                                ty: Unresolved,
+                                                                span: Span {
+                                                                    start: 265,
+                                                                    end: 273,
+                                                                },
+                                                            },
+                                                            op: Add,
+                                                            right: HirExpr {
+                                                                kind: Literal(
+                                                                    Int(
+                                                                        "1",
+                                                                    ),
+                                                                ),
+                                                                ty: Unresolved,
+                                                                span: Span {
+                                                                    start: 276,
+                                                                    end: 277,
+                                                                },
+                                                            },
+                                                        },
+                                                        ty: Unresolved,
+                                                        span: Span {
+                                                            start: 265,
+                                                            end: 277,
+                                                        },
+                                                    },
+                                                },
+                                                ty: Unit,
+                                                span: Span {
+                                                    start: 254,
+                                                    end: 277,
+                                                },
+                                            },
+                                        ),
+                                        span: Span {
+                                            start: 254,
+                                            end: 278,
+                                        },
+                                    },
+                                ],
+                                tail_expr: None,
+                                span: Span {
+                                    start: 244,
+                                    end: 284,
+                                },
+                            },
+                            span: Span {
+                                start: 230,
+                                end: 284,
+                            },
+                        },
+                    ],
+                    span: Span {
+                        start: 49,
+                        end: 286,
+                    },
+                },
+            ),
+            span: Span {
+                start: 49,
+                end: 286,
+            },
+        },
+    ],
+}

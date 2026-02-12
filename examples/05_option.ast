@@ -1,0 +1,574 @@
+=== AST: examples\05_option.nanachi ===
+Program {
+    items: [
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "find_user",
+                    generics: [],
+                    params: [
+                        FnParam {
+                            kind: Typed {
+                                name: "id",
+                                ty: TypeExpr {
+                                    kind: Primitive(
+                                        I32,
+                                    ),
+                                    span: Span {
+                                        start: 17,
+                                        end: 20,
+                                    },
+                                },
+                            },
+                            span: Span {
+                                start: 13,
+                                end: 20,
+                            },
+                        },
+                    ],
+                    return_ty: Some(
+                        TypeExpr {
+                            kind: Option(
+                                TypeExpr {
+                                    kind: Named {
+                                        path: Path {
+                                            segments: [
+                                                "User",
+                                            ],
+                                            span: Span {
+                                                start: 25,
+                                                end: 29,
+                                            },
+                                        },
+                                        generics: [],
+                                    },
+                                    span: Span {
+                                        start: 25,
+                                        end: 29,
+                                    },
+                                },
+                            ),
+                            span: Span {
+                                start: 25,
+                                end: 30,
+                            },
+                        },
+                    ),
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Expr(
+                                    Expr {
+                                        kind: If {
+                                            condition: Expr {
+                                                kind: BinaryOp {
+                                                    left: Expr {
+                                                        kind: Path(
+                                                            Path {
+                                                                segments: [
+                                                                    "id",
+                                                                ],
+                                                                span: Span {
+                                                                    start: 40,
+                                                                    end: 42,
+                                                                },
+                                                            },
+                                                        ),
+                                                        span: Span {
+                                                            start: 40,
+                                                            end: 42,
+                                                        },
+                                                    },
+                                                    op: Eq,
+                                                    right: Expr {
+                                                        kind: Literal(
+                                                            Int(
+                                                                "1",
+                                                            ),
+                                                        ),
+                                                        span: Span {
+                                                            start: 46,
+                                                            end: 47,
+                                                        },
+                                                    },
+                                                },
+                                                span: Span {
+                                                    start: 40,
+                                                    end: 47,
+                                                },
+                                            },
+                                            then_block: Block {
+                                                stmts: [],
+                                                tail_expr: Some(
+                                                    Expr {
+                                                        kind: FnCall {
+                                                            func: Expr {
+                                                                kind: Path(
+                                                                    Path {
+                                                                        segments: [
+                                                                            "Some",
+                                                                        ],
+                                                                        span: Span {
+                                                                            start: 58,
+                                                                            end: 62,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                                span: Span {
+                                                                    start: 58,
+                                                                    end: 62,
+                                                                },
+                                                            },
+                                                            args: [
+                                                                Expr {
+                                                                    kind: StructLiteral {
+                                                                        path: Path {
+                                                                            segments: [
+                                                                                "User",
+                                                                            ],
+                                                                            span: Span {
+                                                                                start: 63,
+                                                                                end: 67,
+                                                                            },
+                                                                        },
+                                                                        fields: [
+                                                                            FieldInit {
+                                                                                name: "name",
+                                                                                value: Some(
+                                                                                    Expr {
+                                                                                        kind: Literal(
+                                                                                            String(
+                                                                                                "nanachi",
+                                                                                            ),
+                                                                                        ),
+                                                                                        span: Span {
+                                                                                            start: 76,
+                                                                                            end: 85,
+                                                                                        },
+                                                                                    },
+                                                                                ),
+                                                                                span: Span {
+                                                                                    start: 70,
+                                                                                    end: 85,
+                                                                                },
+                                                                            },
+                                                                            FieldInit {
+                                                                                name: "age",
+                                                                                value: Some(
+                                                                                    Expr {
+                                                                                        kind: Literal(
+                                                                                            Int(
+                                                                                                "3",
+                                                                                            ),
+                                                                                        ),
+                                                                                        span: Span {
+                                                                                            start: 92,
+                                                                                            end: 93,
+                                                                                        },
+                                                                                    },
+                                                                                ),
+                                                                                span: Span {
+                                                                                    start: 87,
+                                                                                    end: 93,
+                                                                                },
+                                                                            },
+                                                                        ],
+                                                                    },
+                                                                    span: Span {
+                                                                        start: 63,
+                                                                        end: 95,
+                                                                    },
+                                                                },
+                                                            ],
+                                                        },
+                                                        span: Span {
+                                                            start: 58,
+                                                            end: 96,
+                                                        },
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    start: 48,
+                                                    end: 102,
+                                                },
+                                            },
+                                            else_expr: Some(
+                                                Expr {
+                                                    kind: Block(
+                                                        Block {
+                                                            stmts: [],
+                                                            tail_expr: Some(
+                                                                Expr {
+                                                                    kind: Path(
+                                                                        Path {
+                                                                            segments: [
+                                                                                "None",
+                                                                            ],
+                                                                            span: Span {
+                                                                                start: 118,
+                                                                                end: 122,
+                                                                            },
+                                                                        },
+                                                                    ),
+                                                                    span: Span {
+                                                                        start: 118,
+                                                                        end: 122,
+                                                                    },
+                                                                },
+                                                            ),
+                                                            span: Span {
+                                                                start: 108,
+                                                                end: 128,
+                                                            },
+                                                        },
+                                                    ),
+                                                    span: Span {
+                                                        start: 108,
+                                                        end: 128,
+                                                    },
+                                                },
+                                            ),
+                                        },
+                                        span: Span {
+                                            start: 37,
+                                            end: 128,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 37,
+                                    end: 128,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 31,
+                            end: 130,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 130,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 130,
+            },
+        },
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "option_example",
+                    generics: [],
+                    params: [],
+                    return_ty: None,
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Let {
+                                    pattern: Pattern {
+                                        kind: Ident(
+                                            "user",
+                                        ),
+                                        span: Span {
+                                            start: 162,
+                                            end: 166,
+                                        },
+                                    },
+                                    ty: Some(
+                                        TypeExpr {
+                                            kind: Option(
+                                                TypeExpr {
+                                                    kind: Named {
+                                                        path: Path {
+                                                            segments: [
+                                                                "User",
+                                                            ],
+                                                            span: Span {
+                                                                start: 168,
+                                                                end: 172,
+                                                            },
+                                                        },
+                                                        generics: [],
+                                                    },
+                                                    span: Span {
+                                                        start: 168,
+                                                        end: 172,
+                                                    },
+                                                },
+                                            ),
+                                            span: Span {
+                                                start: 168,
+                                                end: 173,
+                                            },
+                                        },
+                                    ),
+                                    value: Some(
+                                        Expr {
+                                            kind: FnCall {
+                                                func: Expr {
+                                                    kind: Path(
+                                                        Path {
+                                                            segments: [
+                                                                "find_user",
+                                                            ],
+                                                            span: Span {
+                                                                start: 176,
+                                                                end: 185,
+                                                            },
+                                                        },
+                                                    ),
+                                                    span: Span {
+                                                        start: 176,
+                                                        end: 185,
+                                                    },
+                                                },
+                                                args: [
+                                                    Expr {
+                                                        kind: Literal(
+                                                            Int(
+                                                                "42",
+                                                            ),
+                                                        ),
+                                                        span: Span {
+                                                            start: 186,
+                                                            end: 188,
+                                                        },
+                                                    },
+                                                ],
+                                            },
+                                            span: Span {
+                                                start: 176,
+                                                end: 189,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 158,
+                                    end: 190,
+                                },
+                            },
+                            Stmt {
+                                kind: Let {
+                                    pattern: Pattern {
+                                        kind: Ident(
+                                            "name",
+                                        ),
+                                        span: Span {
+                                            start: 199,
+                                            end: 203,
+                                        },
+                                    },
+                                    ty: Some(
+                                        TypeExpr {
+                                            kind: Option(
+                                                TypeExpr {
+                                                    kind: Named {
+                                                        path: Path {
+                                                            segments: [
+                                                                "String",
+                                                            ],
+                                                            span: Span {
+                                                                start: 205,
+                                                                end: 211,
+                                                            },
+                                                        },
+                                                        generics: [],
+                                                    },
+                                                    span: Span {
+                                                        start: 205,
+                                                        end: 211,
+                                                    },
+                                                },
+                                            ),
+                                            span: Span {
+                                                start: 205,
+                                                end: 212,
+                                            },
+                                        },
+                                    ),
+                                    value: Some(
+                                        Expr {
+                                            kind: OptionalChain {
+                                                receiver: Expr {
+                                                    kind: FnCall {
+                                                        func: Expr {
+                                                            kind: Path(
+                                                                Path {
+                                                                    segments: [
+                                                                        "find_user",
+                                                                    ],
+                                                                    span: Span {
+                                                                        start: 215,
+                                                                        end: 224,
+                                                                    },
+                                                                },
+                                                            ),
+                                                            span: Span {
+                                                                start: 215,
+                                                                end: 224,
+                                                            },
+                                                        },
+                                                        args: [
+                                                            Expr {
+                                                                kind: Literal(
+                                                                    Int(
+                                                                        "1",
+                                                                    ),
+                                                                ),
+                                                                span: Span {
+                                                                    start: 225,
+                                                                    end: 226,
+                                                                },
+                                                            },
+                                                        ],
+                                                    },
+                                                    span: Span {
+                                                        start: 215,
+                                                        end: 227,
+                                                    },
+                                                },
+                                                access: Field(
+                                                    "name",
+                                                ),
+                                            },
+                                            span: Span {
+                                                start: 215,
+                                                end: 233,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 195,
+                                    end: 234,
+                                },
+                            },
+                            Stmt {
+                                kind: Let {
+                                    pattern: Pattern {
+                                        kind: Ident(
+                                            "age",
+                                        ),
+                                        span: Span {
+                                            start: 243,
+                                            end: 246,
+                                        },
+                                    },
+                                    ty: Some(
+                                        TypeExpr {
+                                            kind: Primitive(
+                                                I32,
+                                            ),
+                                            span: Span {
+                                                start: 248,
+                                                end: 251,
+                                            },
+                                        },
+                                    ),
+                                    value: Some(
+                                        Expr {
+                                            kind: NullCoalesce {
+                                                expr: Expr {
+                                                    kind: OptionalChain {
+                                                        receiver: Expr {
+                                                            kind: FnCall {
+                                                                func: Expr {
+                                                                    kind: Path(
+                                                                        Path {
+                                                                            segments: [
+                                                                                "find_user",
+                                                                            ],
+                                                                            span: Span {
+                                                                                start: 254,
+                                                                                end: 263,
+                                                                            },
+                                                                        },
+                                                                    ),
+                                                                    span: Span {
+                                                                        start: 254,
+                                                                        end: 263,
+                                                                    },
+                                                                },
+                                                                args: [
+                                                                    Expr {
+                                                                        kind: Literal(
+                                                                            Int(
+                                                                                "1",
+                                                                            ),
+                                                                        ),
+                                                                        span: Span {
+                                                                            start: 264,
+                                                                            end: 265,
+                                                                        },
+                                                                    },
+                                                                ],
+                                                            },
+                                                            span: Span {
+                                                                start: 254,
+                                                                end: 266,
+                                                            },
+                                                        },
+                                                        access: Field(
+                                                            "age",
+                                                        ),
+                                                    },
+                                                    span: Span {
+                                                        start: 254,
+                                                        end: 271,
+                                                    },
+                                                },
+                                                default: Expr {
+                                                    kind: Literal(
+                                                        Int(
+                                                            "0",
+                                                        ),
+                                                    ),
+                                                    span: Span {
+                                                        start: 275,
+                                                        end: 276,
+                                                    },
+                                                },
+                                            },
+                                            span: Span {
+                                                start: 254,
+                                                end: 276,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 239,
+                                    end: 277,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 152,
+                            end: 279,
+                        },
+                    },
+                    span: Span {
+                        start: 132,
+                        end: 279,
+                    },
+                },
+            ),
+            span: Span {
+                start: 132,
+                end: 279,
+            },
+        },
+    ],
+}

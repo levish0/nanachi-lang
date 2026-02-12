@@ -1,0 +1,188 @@
+=== AST: examples\02_variables.nanachi ===
+Program {
+    items: [
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "variables",
+                    generics: [],
+                    params: [],
+                    return_ty: None,
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Let {
+                                    pattern: Pattern {
+                                        kind: Ident(
+                                            "x",
+                                        ),
+                                        span: Span {
+                                            start: 25,
+                                            end: 26,
+                                        },
+                                    },
+                                    ty: Some(
+                                        TypeExpr {
+                                            kind: Primitive(
+                                                I32,
+                                            ),
+                                            span: Span {
+                                                start: 28,
+                                                end: 31,
+                                            },
+                                        },
+                                    ),
+                                    value: Some(
+                                        Expr {
+                                            kind: Literal(
+                                                Int(
+                                                    "5",
+                                                ),
+                                            ),
+                                            span: Span {
+                                                start: 34,
+                                                end: 35,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 21,
+                                    end: 36,
+                                },
+                            },
+                            Stmt {
+                                kind: Expr(
+                                    Expr {
+                                        kind: Assign {
+                                            target: Expr {
+                                                kind: Path(
+                                                    Path {
+                                                        segments: [
+                                                            "x",
+                                                        ],
+                                                        span: Span {
+                                                            start: 41,
+                                                            end: 42,
+                                                        },
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    start: 41,
+                                                    end: 42,
+                                                },
+                                            },
+                                            value: Expr {
+                                                kind: Literal(
+                                                    Int(
+                                                        "10",
+                                                    ),
+                                                ),
+                                                span: Span {
+                                                    start: 45,
+                                                    end: 47,
+                                                },
+                                            },
+                                        },
+                                        span: Span {
+                                            start: 41,
+                                            end: 47,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 41,
+                                    end: 48,
+                                },
+                            },
+                            Stmt {
+                                kind: Let {
+                                    pattern: Pattern {
+                                        kind: Ident(
+                                            "y",
+                                        ),
+                                        span: Span {
+                                            start: 57,
+                                            end: 58,
+                                        },
+                                    },
+                                    ty: Some(
+                                        TypeExpr {
+                                            kind: Primitive(
+                                                I32,
+                                            ),
+                                            span: Span {
+                                                start: 60,
+                                                end: 63,
+                                            },
+                                        },
+                                    ),
+                                    value: Some(
+                                        Expr {
+                                            kind: Literal(
+                                                Int(
+                                                    "3",
+                                                ),
+                                            ),
+                                            span: Span {
+                                                start: 66,
+                                                end: 67,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 53,
+                                    end: 68,
+                                },
+                            },
+                            Stmt {
+                                kind: Expr(
+                                    Expr {
+                                        kind: MacroCall {
+                                            path: Path {
+                                                segments: [
+                                                    "println",
+                                                ],
+                                                span: Span {
+                                                    start: 73,
+                                                    end: 80,
+                                                },
+                                            },
+                                            delimiter: Paren,
+                                            tokens: "\"{} {}\" , x , y",
+                                        },
+                                        span: Span {
+                                            start: 73,
+                                            end: 96,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 73,
+                                    end: 97,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 15,
+                            end: 99,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 99,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 99,
+            },
+        },
+    ],
+}

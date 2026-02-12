@@ -1,0 +1,15 @@
+=== Analysis: examples\10_async.nanachi ===
+
+--- fetch ---
+  param url: Ref
+  call_sites: 4 total
+    @67..103: fallible=false, actions=[Borrow]
+    @67..84: fallible=false, actions=[Borrow]
+    @67..90: fallible=false, actions=[Borrow]
+    @67..97: fallible=false, actions=[Borrow]
+
+--- main ---
+  call_sites: 2 total
+    @162..196: fallible=false, actions=[Borrow]
+    @162..190: fallible=false, actions=[Borrow]
+

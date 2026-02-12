@@ -1,0 +1,153 @@
+=== MIR: examples\08_trait_generic.nanachi ===
+MirProgram {
+    bodies: [
+        MirBody {
+            name: "to_string",
+            owner: Some(
+                "User",
+            ),
+            is_async: false,
+            locals: [
+                LocalDecl {
+                    name: "_0",
+                    ty: Named {
+                        path: [
+                            "String",
+                        ],
+                        generics: [],
+                    },
+                    kind: ReturnPlace,
+                    span: Span {
+                        start: 85,
+                        end: 173,
+                    },
+                },
+                LocalDecl {
+                    name: "self",
+                    ty: Unresolved,
+                    kind: SelfParam,
+                    span: Span {
+                        start: 98,
+                        end: 102,
+                    },
+                },
+            ],
+            blocks: [
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: MacroCall {
+                                path: [
+                                    "format",
+                                ],
+                                args: [],
+                            },
+                            span: Span {
+                                start: 124,
+                                end: 167,
+                            },
+                        },
+                        Statement {
+                            kind: Assign(
+                                Place {
+                                    local: Local(
+                                        0,
+                                    ),
+                                    projection: [],
+                                },
+                                Use(
+                                    Constant(
+                                        Unit,
+                                    ),
+                                ),
+                            ),
+                            span: Span {
+                                start: 124,
+                                end: 167,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Return,
+                        span: Span {
+                            start: 114,
+                            end: 173,
+                        },
+                    },
+                },
+            ],
+            arg_count: 1,
+            return_ty: Named {
+                path: [
+                    "String",
+                ],
+                generics: [],
+            },
+            span: Span {
+                start: 85,
+                end: 173,
+            },
+        },
+        MirBody {
+            name: "print_it",
+            owner: None,
+            is_async: false,
+            locals: [
+                LocalDecl {
+                    name: "_0",
+                    ty: Unit,
+                    kind: ReturnPlace,
+                    span: Span {
+                        start: 177,
+                        end: 253,
+                    },
+                },
+                LocalDecl {
+                    name: "item",
+                    ty: Named {
+                        path: [
+                            "T",
+                        ],
+                        generics: [],
+                    },
+                    kind: Param,
+                    span: Span {
+                        start: 203,
+                        end: 210,
+                    },
+                },
+            ],
+            blocks: [
+                BasicBlock {
+                    statements: [
+                        Statement {
+                            kind: MacroCall {
+                                path: [
+                                    "println",
+                                ],
+                                args: [],
+                            },
+                            span: Span {
+                                start: 218,
+                                end: 250,
+                            },
+                        },
+                    ],
+                    terminator: Terminator {
+                        kind: Return,
+                        span: Span {
+                            start: 212,
+                            end: 253,
+                        },
+                    },
+                },
+            ],
+            arg_count: 1,
+            return_ty: Unit,
+            span: Span {
+                start: 177,
+                end: 253,
+            },
+        },
+    ],
+}

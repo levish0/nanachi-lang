@@ -1,0 +1,8 @@
+=== Analysis: examples\08_trait_generic.nanachi ===
+
+--- print_it ---
+  param item: Ref
+
+--- User::to_string ---
+  self_sig: Ref
+

@@ -1,0 +1,5 @@
+=== Analysis: examples\07_enum_match.nanachi ===
+
+--- area ---
+  param shape: Ref
+

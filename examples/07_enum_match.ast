@@ -1,0 +1,384 @@
+=== AST: examples\07_enum_match.nanachi ===
+Program {
+    items: [
+        Item {
+            kind: Enum(
+                EnumItem {
+                    visibility: Private,
+                    name: "Shape",
+                    generics: [],
+                    variants: [
+                        EnumVariant {
+                            name: "Circle",
+                            fields: Struct(
+                                [
+                                    StructField {
+                                        visibility: Private,
+                                        name: "radius",
+                                        ty: TypeExpr {
+                                            kind: Primitive(
+                                                F64,
+                                            ),
+                                            span: Span {
+                                                start: 34,
+                                                end: 37,
+                                            },
+                                        },
+                                        span: Span {
+                                            start: 26,
+                                            end: 37,
+                                        },
+                                    },
+                                ],
+                            ),
+                            span: Span {
+                                start: 17,
+                                end: 39,
+                            },
+                        },
+                        EnumVariant {
+                            name: "Rectangle",
+                            fields: Struct(
+                                [
+                                    StructField {
+                                        visibility: Private,
+                                        name: "width",
+                                        ty: TypeExpr {
+                                            kind: Primitive(
+                                                F64,
+                                            ),
+                                            span: Span {
+                                                start: 64,
+                                                end: 67,
+                                            },
+                                        },
+                                        span: Span {
+                                            start: 57,
+                                            end: 67,
+                                        },
+                                    },
+                                    StructField {
+                                        visibility: Private,
+                                        name: "height",
+                                        ty: TypeExpr {
+                                            kind: Primitive(
+                                                F64,
+                                            ),
+                                            span: Span {
+                                                start: 77,
+                                                end: 80,
+                                            },
+                                        },
+                                        span: Span {
+                                            start: 69,
+                                            end: 80,
+                                        },
+                                    },
+                                ],
+                            ),
+                            span: Span {
+                                start: 45,
+                                end: 82,
+                            },
+                        },
+                    ],
+                    span: Span {
+                        start: 0,
+                        end: 85,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 85,
+            },
+        },
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "area",
+                    generics: [],
+                    params: [
+                        FnParam {
+                            kind: Typed {
+                                name: "shape",
+                                ty: TypeExpr {
+                                    kind: Named {
+                                        path: Path {
+                                            segments: [
+                                                "Shape",
+                                            ],
+                                            span: Span {
+                                                start: 102,
+                                                end: 107,
+                                            },
+                                        },
+                                        generics: [],
+                                    },
+                                    span: Span {
+                                        start: 102,
+                                        end: 107,
+                                    },
+                                },
+                            },
+                            span: Span {
+                                start: 95,
+                                end: 107,
+                            },
+                        },
+                    ],
+                    return_ty: Some(
+                        TypeExpr {
+                            kind: Primitive(
+                                F64,
+                            ),
+                            span: Span {
+                                start: 112,
+                                end: 115,
+                            },
+                        },
+                    ),
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Expr(
+                                    Expr {
+                                        kind: Match {
+                                            expr: Expr {
+                                                kind: Path(
+                                                    Path {
+                                                        segments: [
+                                                            "shape",
+                                                        ],
+                                                        span: Span {
+                                                            start: 128,
+                                                            end: 133,
+                                                        },
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    start: 128,
+                                                    end: 133,
+                                                },
+                                            },
+                                            arms: [
+                                                MatchArm {
+                                                    pattern: Pattern {
+                                                        kind: Struct {
+                                                            path: Path {
+                                                                segments: [
+                                                                    "Shape",
+                                                                    "Circle",
+                                                                ],
+                                                                span: Span {
+                                                                    start: 144,
+                                                                    end: 157,
+                                                                },
+                                                            },
+                                                            fields: [
+                                                                FieldPattern {
+                                                                    name: "radius",
+                                                                    pattern: None,
+                                                                    span: Span {
+                                                                        start: 160,
+                                                                        end: 166,
+                                                                    },
+                                                                },
+                                                            ],
+                                                        },
+                                                        span: Span {
+                                                            start: 144,
+                                                            end: 168,
+                                                        },
+                                                    },
+                                                    guard: None,
+                                                    body: Expr {
+                                                        kind: BinaryOp {
+                                                            left: Expr {
+                                                                kind: BinaryOp {
+                                                                    left: Expr {
+                                                                        kind: Literal(
+                                                                            Float(
+                                                                                "3.14159",
+                                                                            ),
+                                                                        ),
+                                                                        span: Span {
+                                                                            start: 172,
+                                                                            end: 179,
+                                                                        },
+                                                                    },
+                                                                    op: Mul,
+                                                                    right: Expr {
+                                                                        kind: Path(
+                                                                            Path {
+                                                                                segments: [
+                                                                                    "radius",
+                                                                                ],
+                                                                                span: Span {
+                                                                                    start: 182,
+                                                                                    end: 188,
+                                                                                },
+                                                                            },
+                                                                        ),
+                                                                        span: Span {
+                                                                            start: 182,
+                                                                            end: 188,
+                                                                        },
+                                                                    },
+                                                                },
+                                                                span: Span {
+                                                                    start: 172,
+                                                                    end: 188,
+                                                                },
+                                                            },
+                                                            op: Mul,
+                                                            right: Expr {
+                                                                kind: Path(
+                                                                    Path {
+                                                                        segments: [
+                                                                            "radius",
+                                                                        ],
+                                                                        span: Span {
+                                                                            start: 191,
+                                                                            end: 197,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                                span: Span {
+                                                                    start: 191,
+                                                                    end: 197,
+                                                                },
+                                                            },
+                                                        },
+                                                        span: Span {
+                                                            start: 172,
+                                                            end: 197,
+                                                        },
+                                                    },
+                                                    span: Span {
+                                                        start: 144,
+                                                        end: 197,
+                                                    },
+                                                },
+                                                MatchArm {
+                                                    pattern: Pattern {
+                                                        kind: Struct {
+                                                            path: Path {
+                                                                segments: [
+                                                                    "Shape",
+                                                                    "Rectangle",
+                                                                ],
+                                                                span: Span {
+                                                                    start: 207,
+                                                                    end: 223,
+                                                                },
+                                                            },
+                                                            fields: [
+                                                                FieldPattern {
+                                                                    name: "width",
+                                                                    pattern: None,
+                                                                    span: Span {
+                                                                        start: 226,
+                                                                        end: 231,
+                                                                    },
+                                                                },
+                                                                FieldPattern {
+                                                                    name: "height",
+                                                                    pattern: None,
+                                                                    span: Span {
+                                                                        start: 233,
+                                                                        end: 239,
+                                                                    },
+                                                                },
+                                                            ],
+                                                        },
+                                                        span: Span {
+                                                            start: 207,
+                                                            end: 241,
+                                                        },
+                                                    },
+                                                    guard: None,
+                                                    body: Expr {
+                                                        kind: BinaryOp {
+                                                            left: Expr {
+                                                                kind: Path(
+                                                                    Path {
+                                                                        segments: [
+                                                                            "width",
+                                                                        ],
+                                                                        span: Span {
+                                                                            start: 245,
+                                                                            end: 250,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                                span: Span {
+                                                                    start: 245,
+                                                                    end: 250,
+                                                                },
+                                                            },
+                                                            op: Mul,
+                                                            right: Expr {
+                                                                kind: Path(
+                                                                    Path {
+                                                                        segments: [
+                                                                            "height",
+                                                                        ],
+                                                                        span: Span {
+                                                                            start: 253,
+                                                                            end: 259,
+                                                                        },
+                                                                    },
+                                                                ),
+                                                                span: Span {
+                                                                    start: 253,
+                                                                    end: 259,
+                                                                },
+                                                            },
+                                                        },
+                                                        span: Span {
+                                                            start: 245,
+                                                            end: 259,
+                                                        },
+                                                    },
+                                                    span: Span {
+                                                        start: 207,
+                                                        end: 259,
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                        span: Span {
+                                            start: 122,
+                                            end: 266,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 122,
+                                    end: 266,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 116,
+                            end: 268,
+                        },
+                    },
+                    span: Span {
+                        start: 87,
+                        end: 268,
+                    },
+                },
+            ),
+            span: Span {
+                start: 87,
+                end: 268,
+            },
+        },
+    ],
+}

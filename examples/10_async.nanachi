@@ -1,0 +1,9 @@
+async fn fetch(url: String) -> String {
+    let response: String = reqwest::get(url).await.text().await;
+    response
+}
+
+async fn main() {
+    let data: String = fetch("https://example.com").await;
+    println!("{}", data);
+}

@@ -1,0 +1,99 @@
+=== AST: examples\11_rust_block.nanachi ===
+Program {
+    items: [
+        Item {
+            kind: Function(
+                FunctionItem {
+                    visibility: Private,
+                    is_async: false,
+                    name: "interop_example",
+                    generics: [],
+                    params: [],
+                    return_ty: None,
+                    where_clause: [],
+                    body: Block {
+                        stmts: [
+                            Stmt {
+                                kind: Let {
+                                    pattern: Pattern {
+                                        kind: Ident(
+                                            "x",
+                                        ),
+                                        span: Span {
+                                            start: 31,
+                                            end: 32,
+                                        },
+                                    },
+                                    ty: Some(
+                                        TypeExpr {
+                                            kind: Primitive(
+                                                I32,
+                                            ),
+                                            span: Span {
+                                                start: 34,
+                                                end: 37,
+                                            },
+                                        },
+                                    ),
+                                    value: Some(
+                                        Expr {
+                                            kind: Literal(
+                                                Int(
+                                                    "42",
+                                                ),
+                                            ),
+                                            span: Span {
+                                                start: 40,
+                                                end: 42,
+                                            },
+                                        },
+                                    ),
+                                },
+                                span: Span {
+                                    start: 27,
+                                    end: 43,
+                                },
+                            },
+                            Stmt {
+                                kind: Item(
+                                    Item {
+                                        kind: RustBlock(
+                                            RustBlockItem {
+                                                code: "use std :: collections :: HashMap ; let mut map = HashMap :: new ( ) ; map . insert ( \"answer\" , x ) ; println ! ( \"{:?}\" , map ) ;",
+                                                span: Span {
+                                                    start: 48,
+                                                    end: 201,
+                                                },
+                                            },
+                                        ),
+                                        span: Span {
+                                            start: 48,
+                                            end: 201,
+                                        },
+                                    },
+                                ),
+                                span: Span {
+                                    start: 48,
+                                    end: 201,
+                                },
+                            },
+                        ],
+                        tail_expr: None,
+                        span: Span {
+                            start: 21,
+                            end: 203,
+                        },
+                    },
+                    span: Span {
+                        start: 0,
+                        end: 203,
+                    },
+                },
+            ),
+            span: Span {
+                start: 0,
+                end: 203,
+            },
+        },
+    ],
+}
