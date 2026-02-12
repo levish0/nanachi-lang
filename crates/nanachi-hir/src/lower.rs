@@ -96,10 +96,8 @@ fn collect_fn_signature(ctx: &mut LowerCtx, f: &FunctionItem) {
         .as_ref()
         .map(|t| lower_type(t))
         .unwrap_or(HirType::Unit);
-    ctx.scope.define(
-        f.name.clone(),
-        Symbol::Function { params, return_ty },
-    );
+    ctx.scope
+        .define(f.name.clone(), Symbol::Function { params, return_ty });
 }
 
 fn collect_struct_signature(ctx: &mut LowerCtx, s: &StructItem) {
@@ -108,8 +106,7 @@ fn collect_struct_signature(ctx: &mut LowerCtx, s: &StructItem) {
         .iter()
         .map(|f| (f.name.clone(), lower_type(&f.ty)))
         .collect();
-    ctx.scope
-        .define(s.name.clone(), Symbol::Struct { fields });
+    ctx.scope.define(s.name.clone(), Symbol::Struct { fields });
 }
 
 fn collect_enum_signature(ctx: &mut LowerCtx, e: &EnumItem) {
@@ -118,8 +115,7 @@ fn collect_enum_signature(ctx: &mut LowerCtx, e: &EnumItem) {
         .iter()
         .map(|v| (v.name.clone(), lower_variant_fields(&v.fields)))
         .collect();
-    ctx.scope
-        .define(e.name.clone(), Symbol::Enum { variants });
+    ctx.scope.define(e.name.clone(), Symbol::Enum { variants });
 }
 
 fn collect_trait_signature(ctx: &mut LowerCtx, t: &TraitItem) {
@@ -147,8 +143,7 @@ fn collect_trait_signature(ctx: &mut LowerCtx, t: &TraitItem) {
             }
         })
         .collect();
-    ctx.scope
-        .define(t.name.clone(), Symbol::Trait { methods });
+    ctx.scope.define(t.name.clone(), Symbol::Trait { methods });
 }
 
 fn collect_impl_signatures(ctx: &mut LowerCtx, i: &ImplItem) {
@@ -218,22 +213,15 @@ fn lower_fn_params(ctx: &mut LowerCtx, params: &[FnParam]) -> Vec<HirFnParam> {
                 FnParamKind::SelfParam => HirFnParamKind::SelfParam,
                 FnParamKind::Typed { name, ty } => {
                     let hir_ty = lower_type(ty);
-                    ctx.scope.define(
-                        name.clone(),
-                        Symbol::Variable {
-                            ty: hir_ty.clone(),
-                        },
-                    );
+                    ctx.scope
+                        .define(name.clone(), Symbol::Variable { ty: hir_ty.clone() });
                     HirFnParamKind::Typed {
                         name: name.clone(),
                         ty: hir_ty,
                     }
                 }
             };
-            HirFnParam {
-                kind,
-                span: p.span,
-            }
+            HirFnParam { kind, span: p.span }
         })
         .collect()
 }
@@ -269,11 +257,7 @@ fn lower_enum(e: &EnumItem) -> HirEnum {
         visibility: e.visibility,
         name: e.name.clone(),
         generics: lower_generics(&e.generics),
-        variants: e
-            .variants
-            .iter()
-            .map(|v| lower_enum_variant(v))
-            .collect(),
+        variants: e.variants.iter().map(|v| lower_enum_variant(v)).collect(),
         span: e.span,
     }
 }
@@ -326,12 +310,8 @@ fn lower_trait_method(ctx: &mut LowerCtx, m: &TraitMethod) -> Result<HirTraitMet
         // Register params in scope for default body.
         for p in &m.params {
             if let FnParamKind::Typed { name, ty } = &p.kind {
-                ctx.scope.define(
-                    name.clone(),
-                    Symbol::Variable {
-                        ty: lower_type(ty),
-                    },
-                );
+                ctx.scope
+                    .define(name.clone(), Symbol::Variable { ty: lower_type(ty) });
             }
         }
         let block = lower_block(ctx, body)?;
@@ -363,10 +343,7 @@ fn lower_fn_params_no_scope(params: &[FnParam]) -> Vec<HirFnParam> {
                     ty: lower_type(ty),
                 },
             };
-            HirFnParam {
-                kind,
-                span: p.span,
-            }
+            HirFnParam { kind, span: p.span }
         })
         .collect()
 }
@@ -496,7 +473,10 @@ fn lower_block(ctx: &mut LowerCtx, block: &Block) -> Result<HirBlock, HirError> 
 fn lower_stmt(ctx: &mut LowerCtx, stmt: &Stmt) -> Result<HirStmt, HirError> {
     let kind = match &stmt.kind {
         StmtKind::Let { pattern, ty, value } => {
-            let hir_ty = ty.as_ref().map(|t| lower_type(t)).unwrap_or(HirType::Unresolved);
+            let hir_ty = ty
+                .as_ref()
+                .map(|t| lower_type(t))
+                .unwrap_or(HirType::Unresolved);
             let hir_value = if let Some(v) = value {
                 Some(lower_expr(ctx, v)?)
             } else {
@@ -917,10 +897,7 @@ fn lower_exprs(ctx: &mut LowerCtx, exprs: &[Expr]) -> Result<Vec<HirExpr>, HirEr
     exprs.iter().map(|e| lower_expr(ctx, e)).collect()
 }
 
-fn lower_match_arms(
-    ctx: &mut LowerCtx,
-    arms: &[MatchArm],
-) -> Result<Vec<HirMatchArm>, HirError> {
+fn lower_match_arms(ctx: &mut LowerCtx, arms: &[MatchArm]) -> Result<Vec<HirMatchArm>, HirError> {
     arms.iter()
         .map(|arm| {
             ctx.scope.push();
@@ -969,11 +946,10 @@ fn lower_closure_params(ctx: &mut LowerCtx, params: &[ClosureParam]) -> Vec<HirC
     params
         .iter()
         .map(|p| {
-            let ty = p
-                .ty
-                .as_ref()
-                .map(|t| lower_type(t))
-                .unwrap_or(HirType::Unresolved);
+            let ty =
+                p.ty.as_ref()
+                    .map(|t| lower_type(t))
+                    .unwrap_or(HirType::Unresolved);
             ctx.scope
                 .define(p.name.clone(), Symbol::Variable { ty: ty.clone() });
             HirClosureParam {
@@ -1291,8 +1267,12 @@ mod tests {
             HirItemKind::Enum(e) => {
                 assert_eq!(e.name, "Shape");
                 assert_eq!(e.variants.len(), 2);
-                assert!(matches!(&e.variants[0].fields, HirVariantFields::Tuple(types) if types.len() == 1));
-                assert!(matches!(&e.variants[1].fields, HirVariantFields::Struct(fields) if fields.len() == 2));
+                assert!(
+                    matches!(&e.variants[0].fields, HirVariantFields::Tuple(types) if types.len() == 1)
+                );
+                assert!(
+                    matches!(&e.variants[1].fields, HirVariantFields::Struct(fields) if fields.len() == 2)
+                );
             }
             _ => panic!("expected enum"),
         }
@@ -1405,7 +1385,9 @@ mod tests {
         match &f.body.stmts[0].kind {
             HirStmtKind::Let { value, .. } => {
                 let expr = value.as_ref().unwrap();
-                assert!(matches!(&expr.kind, HirExprKind::OptionalChain { access: HirOptionalAccess::Field(f), .. } if f == "name"));
+                assert!(
+                    matches!(&expr.kind, HirExprKind::OptionalChain { access: HirOptionalAccess::Field(f), .. } if f == "name")
+                );
             }
             _ => panic!("expected let"),
         }
@@ -1514,7 +1496,10 @@ mod tests {
         let f = expect_fn(&prog, 0, "f");
         match &f.body.stmts[0].kind {
             HirStmtKind::For {
-                pattern, iter_ty, body, ..
+                pattern,
+                iter_ty,
+                body,
+                ..
             } => {
                 assert!(matches!(&pattern.kind, HirPatternKind::Ident(n) if n == "i"));
                 assert_eq!(iter_ty, &HirType::Primitive(PrimitiveType::I32));
@@ -1536,7 +1521,10 @@ mod tests {
         let f = expect_fn(&prog, 0, "f");
         match &f.body.stmts[0].kind {
             HirStmtKind::While { condition, body } => {
-                assert!(matches!(&condition.kind, HirExprKind::Literal(Literal::Bool(true))));
+                assert!(matches!(
+                    &condition.kind,
+                    HirExprKind::Literal(Literal::Bool(true))
+                ));
                 assert!(matches!(&body.stmts[0].kind, HirStmtKind::Break(None)));
             }
             _ => panic!("expected while"),
@@ -1673,14 +1661,18 @@ mod tests {
         );
         // find_user return type: Option(Named "User")
         let fu = expect_fn(&prog, 0, "find_user");
-        assert!(matches!(&fu.return_ty, HirType::Option(inner) if matches!(inner.as_ref(), HirType::Named { path, .. } if path == &["User"])));
+        assert!(
+            matches!(&fu.return_ty, HirType::Option(inner) if matches!(inner.as_ref(), HirType::Named { path, .. } if path == &["User"]))
+        );
 
         // option_example variables
         let oe = expect_fn(&prog, 1, "option_example");
         // let user: User? → Option(Named "User")
         match &oe.body.stmts[0].kind {
             HirStmtKind::Let { ty, value, .. } => {
-                assert!(matches!(ty, HirType::Option(inner) if matches!(inner.as_ref(), HirType::Named { path, .. } if path == &["User"])));
+                assert!(
+                    matches!(ty, HirType::Option(inner) if matches!(inner.as_ref(), HirType::Named { path, .. } if path == &["User"]))
+                );
                 // find_user(42) should return Option(Named "User")
                 let call = value.as_ref().unwrap();
                 assert!(matches!(call.ty, HirType::Option(_)));
@@ -1690,7 +1682,9 @@ mod tests {
         // let name: String? → Option(Named "String")
         match &oe.body.stmts[1].kind {
             HirStmtKind::Let { ty, .. } => {
-                assert!(matches!(ty, HirType::Option(inner) if matches!(inner.as_ref(), HirType::Named { path, .. } if path == &["String"])));
+                assert!(
+                    matches!(ty, HirType::Option(inner) if matches!(inner.as_ref(), HirType::Named { path, .. } if path == &["String"]))
+                );
             }
             _ => panic!("expected let"),
         }
@@ -1742,7 +1736,12 @@ mod tests {
         assert!(f.body.tail_expr.is_some());
         // for loop
         match &f.body.stmts[3].kind {
-            HirStmtKind::For { pattern, iter_ty, body, .. } => {
+            HirStmtKind::For {
+                pattern,
+                iter_ty,
+                body,
+                ..
+            } => {
                 assert!(matches!(&pattern.kind, HirPatternKind::Ident(n) if n == "line"));
                 assert!(matches!(iter_ty, HirType::Named { path, .. } if path == &["String"]));
                 assert_eq!(body.stmts.len(), 4);

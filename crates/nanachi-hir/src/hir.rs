@@ -21,10 +21,7 @@ pub enum HirType {
     /// Tuple: `(i32, f64)`.
     Tuple(Vec<HirType>),
     /// Fixed-size array: `[i32; 5]`.
-    Array {
-        element: Box<HirType>,
-        size: usize,
-    },
+    Array { element: Box<HirType>, size: usize },
     /// Slice: `[i32]`.
     Slice(Box<HirType>),
     /// Unit: `()`.
@@ -96,10 +93,7 @@ pub enum HirExprKind {
         right: Box<HirExpr>,
     },
     /// Unary operation.
-    UnaryOp {
-        op: UnOp,
-        operand: Box<HirExpr>,
-    },
+    UnaryOp { op: UnOp, operand: Box<HirExpr> },
     /// Function call.
     FnCall {
         func: Box<HirExpr>,
@@ -151,9 +145,7 @@ pub enum HirExprKind {
         arms: Vec<HirMatchArm>,
     },
     /// `.await` expression.
-    Await {
-        expr: Box<HirExpr>,
-    },
+    Await { expr: Box<HirExpr> },
     /// Assignment.
     Assign {
         target: Box<HirExpr>,
@@ -241,10 +233,7 @@ pub enum HirStmtKind {
     /// Expression statement.
     Expr(HirExpr),
     /// `while condition { body }`.
-    While {
-        condition: HirExpr,
-        body: HirBlock,
-    },
+    While { condition: HirExpr, body: HirBlock },
     /// `for pattern [: type] in iter { body }`.
     For {
         pattern: HirPattern,
@@ -253,9 +242,7 @@ pub enum HirStmtKind {
         body: HirBlock,
     },
     /// `loop { body }`.
-    Loop {
-        body: HirBlock,
-    },
+    Loop { body: HirBlock },
     /// `break [expr];`.
     Break(Option<HirExpr>),
     /// `continue;`.

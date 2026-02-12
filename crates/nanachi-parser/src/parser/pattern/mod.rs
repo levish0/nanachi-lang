@@ -5,8 +5,8 @@ use winnow::combinator::separated;
 use winnow::prelude::*;
 use winnow::token::any;
 
-use super::common::{backtrack, token};
 use super::ParserInput;
+use super::common::{backtrack, token};
 
 mod path;
 

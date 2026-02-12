@@ -78,11 +78,7 @@ pub fn analyze_liveness(body: &MirBody) -> LivenessInfo {
 }
 
 /// Check if a local is live after a terminator in the given block.
-pub fn is_live_after_terminator(
-    block_id: BlockId,
-    local: Local,
-    liveness: &LivenessInfo,
-) -> bool {
+pub fn is_live_after_terminator(block_id: BlockId, local: Local, liveness: &LivenessInfo) -> bool {
     liveness
         .live_out
         .get(&block_id)
@@ -164,9 +160,7 @@ fn compute_used_killed(
                 add_operand_locals(arg, used, killed);
             }
         }
-        TerminatorKind::MethodCall {
-            receiver, args, ..
-        } => {
+        TerminatorKind::MethodCall { receiver, args, .. } => {
             add_operand_locals(receiver, used, killed);
             for arg in args {
                 add_operand_locals(arg, used, killed);
@@ -182,11 +176,7 @@ fn compute_used_killed(
     }
 }
 
-fn collect_rvalue_reads(
-    rvalue: &Rvalue,
-    used: &mut HashSet<Local>,
-    killed: &HashSet<Local>,
-) {
+fn collect_rvalue_reads(rvalue: &Rvalue, used: &mut HashSet<Local>, killed: &HashSet<Local>) {
     match rvalue {
         Rvalue::Use(op) => add_operand_locals(op, used, killed),
         Rvalue::BinaryOp { left, right, .. } => {
@@ -268,14 +258,15 @@ mod tests {
         let x = local_by_name(body, "x");
         let entry = BlockId(0);
         let live_in = info.live_in.get(&entry).unwrap();
-        assert!(!live_in.contains(&x), "x defined before use: not live at entry");
+        assert!(
+            !live_in.contains(&x),
+            "x defined before use: not live at entry"
+        );
     }
 
     #[test]
     fn dead_after_last_use() {
-        let mir = build_mir(
-            "fn f() { let x: i32 = 5; let y: i32 = x; let z: i32 = 1; }",
-        );
+        let mir = build_mir("fn f() { let x: i32 = 5; let y: i32 = x; let z: i32 = 1; }");
         let body = find_body(&mir, "f");
         let info = analyze_liveness(body);
         let x = local_by_name(body, "x");

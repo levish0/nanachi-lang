@@ -45,7 +45,9 @@ pub fn analyze_errors(
                         }
                     }
                 }
-                TerminatorKind::MethodCall { receiver, method, .. } => {
+                TerminatorKind::MethodCall {
+                    receiver, method, ..
+                } => {
                     let recv_type = operand_type(receiver, body);
                     if let Some(hint) = hints::method_hint(&recv_type, method) {
                         if hint.returns_result {
@@ -289,9 +291,7 @@ fn collect_explicit_results(hir: &HirProgram) -> std::collections::HashSet<FnKey
             }
             HirItemKind::Impl(imp) => {
                 let owner = match &imp.target {
-                    HirType::Named { path, .. } if !path.is_empty() => {
-                        Some(path.join("::"))
-                    }
+                    HirType::Named { path, .. } if !path.is_empty() => Some(path.join("::")),
                     _ => None,
                 };
                 for method in &imp.methods {

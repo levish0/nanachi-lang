@@ -3,16 +3,13 @@ use nanachi_lexer::{Span, Token};
 use winnow::combinator::peek;
 use winnow::prelude::*;
 
+use super::super::common::{ident, token};
+use super::super::{ParserInput, expr, types};
 use super::common::{generic_params, type_expr_to_path};
 use super::function::{fn_param, function_item};
-use super::super::common::{ident, token};
-use super::super::{expr, types, ParserInput};
 
 /// `trait Name[<T>] { methods }`
-pub fn trait_item(
-    input: &mut ParserInput<'_>,
-    vis: Visibility,
-) -> winnow::Result<TraitItem> {
+pub fn trait_item(input: &mut ParserInput<'_>, vis: Visibility) -> winnow::Result<TraitItem> {
     let trait_tok = token(Token::Trait).parse_next(input)?;
     let name_tok = ident(input)?;
     let generics = generic_params(input)?;
@@ -42,8 +39,8 @@ fn trait_method(input: &mut ParserInput<'_>) -> winnow::Result<TraitMethod> {
     let generics = generic_params(input)?;
 
     token(Token::LParen).parse_next(input)?;
-    let params = winnow::combinator::separated(0.., fn_param, token(Token::Comma))
-        .parse_next(input)?;
+    let params =
+        winnow::combinator::separated(0.., fn_param, token(Token::Comma)).parse_next(input)?;
     let _ = token(Token::Comma).parse_next(input);
     token(Token::RParen).parse_next(input)?;
 

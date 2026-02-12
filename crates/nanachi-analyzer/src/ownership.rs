@@ -3,15 +3,12 @@ use std::collections::HashMap;
 use nanachi_hir::{HirItemKind, HirProgram, HirType};
 use nanachi_lexer::Span;
 use nanachi_mir::{
-    Local, LocalKind, MirBody, MirProgram, Operand, Rvalue, StatementKind,
-    TerminatorKind,
+    Local, LocalKind, MirBody, MirProgram, Operand, Rvalue, StatementKind, TerminatorKind,
 };
 
 use crate::hints;
 use crate::liveness::{self, LivenessInfo};
-use crate::{
-    AnalysisWarning, ArgAction, CallSiteInfo, FnAnalysis, FnKey, ParamSig, SelfSig,
-};
+use crate::{AnalysisWarning, ArgAction, CallSiteInfo, FnAnalysis, FnKey, ParamSig, SelfSig};
 
 // ── Local Analysis (Level 1 + Level 2) ──────────────────────
 
@@ -230,10 +227,7 @@ fn widen_self(sig: &mut Option<SelfSig>, new: SelfSig) {
 // ── Cross-function Convergence (Level 3) ─────────────────────
 
 /// Iterate to convergence: when a callee's param sig changes, re-analyze callers.
-pub fn converge_cross_function(
-    mir: &MirProgram,
-    functions: &mut HashMap<FnKey, FnAnalysis>,
-) {
+pub fn converge_cross_function(mir: &MirProgram, functions: &mut HashMap<FnKey, FnAnalysis>) {
     loop {
         let mut changed = false;
         for body in &mir.bodies {
@@ -416,10 +410,7 @@ fn widen_caller_from_method_receiver(
 // ── Trait Signature Unification ──────────────────────────────
 
 /// Unify trait method signatures: for each trait method, take the widest sig across all impls.
-pub fn unify_trait_sigs(
-    hir: &HirProgram,
-    functions: &mut HashMap<FnKey, FnAnalysis>,
-) {
+pub fn unify_trait_sigs(hir: &HirProgram, functions: &mut HashMap<FnKey, FnAnalysis>) {
     // Collect trait → method names
     let mut trait_methods: HashMap<String, Vec<String>> = HashMap::new();
     for item in &hir.items {
@@ -437,10 +428,7 @@ pub fn unify_trait_sigs(
                 let trait_name = trait_path.last().cloned().unwrap_or_default();
                 let owner = type_to_owner(&imp.target);
                 if let Some(owner) = owner {
-                    trait_impls
-                        .entry(trait_name)
-                        .or_default()
-                        .push(owner);
+                    trait_impls.entry(trait_name).or_default().push(owner);
                 }
             }
         }
@@ -485,14 +473,11 @@ pub fn unify_trait_sigs(
                             analysis.self_sig = Some(widest_self);
                         }
                         for (name, &sig) in &widest_params {
-                            analysis
-                                .param_sigs
-                                .entry(name.clone())
-                                .and_modify(|s| {
-                                    if sig > *s {
-                                        *s = sig;
-                                    }
-                                });
+                            analysis.param_sigs.entry(name.clone()).and_modify(|s| {
+                                if sig > *s {
+                                    *s = sig;
+                                }
+                            });
                         }
                     }
                 }
@@ -522,7 +507,13 @@ pub fn finalize_call_sites(
                 let is_fallible = check_fallibility_for_call(func, &callee_key, functions);
                 let arg_actions =
                     compute_arg_actions(args, body, &callee_key, functions, block_id, liveness);
-                new_call_sites.insert(span, CallSiteInfo { arg_actions, is_fallible });
+                new_call_sites.insert(
+                    span,
+                    CallSiteInfo {
+                        arg_actions,
+                        is_fallible,
+                    },
+                );
             }
             TerminatorKind::MethodCall {
                 receiver,
@@ -592,7 +583,13 @@ pub fn finalize_call_sites(
                     arg_actions.push(action);
                 }
 
-                new_call_sites.insert(span, CallSiteInfo { arg_actions, is_fallible });
+                new_call_sites.insert(
+                    span,
+                    CallSiteInfo {
+                        arg_actions,
+                        is_fallible,
+                    },
+                );
             }
             _ => {}
         }
@@ -611,9 +608,7 @@ fn compute_arg_actions(
     block_id: nanachi_mir::BlockId,
     liveness: &LivenessInfo,
 ) -> Vec<ArgAction> {
-    let callee_analysis = callee_key
-        .as_ref()
-        .and_then(|k| functions.get(k));
+    let callee_analysis = callee_key.as_ref().and_then(|k| functions.get(k));
 
     args.iter()
         .enumerate()
@@ -698,8 +693,7 @@ fn compute_initial_call_sites(
         match &bb.terminator.kind {
             TerminatorKind::Call { func, args, .. } => {
                 let is_fallible = if let Some(path) = operand_path(func) {
-                    hints::function_hint(&path)
-                        .map_or(false, |h| h.returns_result)
+                    hints::function_hint(&path).map_or(false, |h| h.returns_result)
                 } else {
                     false
                 };
@@ -715,7 +709,13 @@ fn compute_initial_call_sites(
                     })
                     .collect();
 
-                sites.insert(span, CallSiteInfo { arg_actions, is_fallible });
+                sites.insert(
+                    span,
+                    CallSiteInfo {
+                        arg_actions,
+                        is_fallible,
+                    },
+                );
             }
             TerminatorKind::MethodCall {
                 receiver,
@@ -764,7 +764,13 @@ fn compute_initial_call_sites(
                     arg_actions.push(action);
                 }
 
-                sites.insert(span, CallSiteInfo { arg_actions, is_fallible });
+                sites.insert(
+                    span,
+                    CallSiteInfo {
+                        arg_actions,
+                        is_fallible,
+                    },
+                );
             }
             _ => {}
         }

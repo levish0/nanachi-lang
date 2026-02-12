@@ -3,15 +3,12 @@ use nanachi_lexer::{Span, Token};
 use winnow::combinator::separated;
 use winnow::prelude::*;
 
-use super::common::{generic_params, where_clause};
 use super::super::common::{ident, token};
-use super::super::{expr, types, ParserInput};
+use super::super::{ParserInput, expr, types};
+use super::common::{generic_params, where_clause};
 
 /// `[async] fn name[<T>](params) [-> RetTy] [where ...] { body }`
-pub fn function_item(
-    input: &mut ParserInput<'_>,
-    vis: Visibility,
-) -> winnow::Result<FunctionItem> {
+pub fn function_item(input: &mut ParserInput<'_>, vis: Visibility) -> winnow::Result<FunctionItem> {
     let start = input.input.first().map(|t| t.span.start).unwrap_or(0);
 
     let is_async = token(Token::Async).parse_next(input).is_ok();

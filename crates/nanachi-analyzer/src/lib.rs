@@ -334,7 +334,10 @@ mod tests {
             .values()
             .find(|cs| cs.arg_actions.len() == 2)
             .expect("expected callee call-site");
-        assert_eq!(call.arg_actions, vec![ArgAction::Borrow, ArgAction::BorrowMut]);
+        assert_eq!(
+            call.arg_actions,
+            vec![ArgAction::Borrow, ArgAction::BorrowMut]
+        );
     }
 
     #[test]

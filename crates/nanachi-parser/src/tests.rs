@@ -1,4 +1,4 @@
-﻿use super::*;
+use super::*;
 use nanachi_ast::expr::*;
 use nanachi_ast::item::*;
 use nanachi_ast::stmt::*;
@@ -1234,4 +1234,3 @@ fn expect_fn<'a>(prog: &'a Program, idx: usize, name: &str) -> &'a FunctionItem 
         _ => panic!("expected function '{}' at index {}", name, idx),
     }
 }
-

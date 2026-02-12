@@ -15,17 +15,13 @@ pub enum Symbol {
         return_ty: HirType,
     },
     /// A struct definition.
-    Struct {
-        fields: Vec<(String, HirType)>,
-    },
+    Struct { fields: Vec<(String, HirType)> },
     /// An enum definition.
     Enum {
         variants: Vec<(String, HirVariantFields)>,
     },
     /// A trait definition.
-    Trait {
-        methods: Vec<TraitMethodSig>,
-    },
+    Trait { methods: Vec<TraitMethodSig> },
 }
 
 /// Signature of a trait method.

@@ -93,7 +93,10 @@ fn process_file(path: &Path) -> Result<PathBuf, String> {
 
         // Call sites
         if !analysis.call_sites.is_empty() {
-            out.push_str(&format!("  call_sites: {} total\n", analysis.call_sites.len()));
+            out.push_str(&format!(
+                "  call_sites: {} total\n",
+                analysis.call_sites.len()
+            ));
             for (span, info) in &analysis.call_sites {
                 out.push_str(&format!(
                     "    @{}..{}: fallible={}, actions={:?}\n",
@@ -139,8 +142,8 @@ fn collect_inputs(input: &str) -> Result<Vec<PathBuf>, String> {
     }
     if path.is_dir() {
         let mut files = Vec::new();
-        for entry in
-            std::fs::read_dir(&path).map_err(|e| format!("Error reading {}: {e}", path.display()))?
+        for entry in std::fs::read_dir(&path)
+            .map_err(|e| format!("Error reading {}: {e}", path.display()))?
         {
             let entry = entry.map_err(|e| format!("Error reading dir entry: {e}"))?;
             let file_path = entry.path();

@@ -6,15 +6,12 @@ use nanachi_lexer::{Span, Token};
 use winnow::combinator::{peek, separated};
 use winnow::prelude::*;
 
-use super::common::{generic_params, visibility};
 use super::super::common::{ident, token};
-use super::super::{types, ParserInput};
+use super::super::{ParserInput, types};
+use super::common::{generic_params, visibility};
 
 /// `struct Name[<T>] { fields }`
-pub fn struct_item(
-    input: &mut ParserInput<'_>,
-    vis: Visibility,
-) -> winnow::Result<StructItem> {
+pub fn struct_item(input: &mut ParserInput<'_>, vis: Visibility) -> winnow::Result<StructItem> {
     let struct_tok = token(Token::Struct).parse_next(input)?;
     let name_tok = ident(input)?;
     let generics = generic_params(input)?;

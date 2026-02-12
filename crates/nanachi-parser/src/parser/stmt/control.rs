@@ -1,9 +1,9 @@
+use super::super::ParserInput;
+use super::super::common::token;
+use crate::parser::expr::{block_parser, expr_parser};
 use nanachi_ast::stmt::{Stmt, StmtKind};
 use nanachi_lexer::{Span, Token};
 use winnow::prelude::*;
-use crate::parser::expr::{block_parser, expr_parser};
-use super::super::common::token;
-use super::super::ParserInput;
 
 /// `while condition { body }`
 pub fn while_stmt(input: &mut ParserInput<'_>) -> winnow::Result<Stmt> {

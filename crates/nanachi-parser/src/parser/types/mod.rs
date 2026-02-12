@@ -4,8 +4,8 @@ use winnow::combinator::separated;
 use winnow::error::ContextError;
 use winnow::prelude::*;
 
-use super::common::{ident, token};
 use super::ParserInput;
+use super::common::{ident, token};
 
 mod primitive;
 

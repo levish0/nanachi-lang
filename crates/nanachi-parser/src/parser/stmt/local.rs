@@ -2,8 +2,8 @@ use nanachi_ast::stmt::{Stmt, StmtKind};
 use nanachi_lexer::{Span, Token};
 use winnow::prelude::*;
 
-use super::super::common::token;
 use super::super::ParserInput;
+use super::super::common::token;
 
 /// `let pattern [: type] [= value];`
 pub fn let_stmt(input: &mut ParserInput<'_>) -> winnow::Result<Stmt> {

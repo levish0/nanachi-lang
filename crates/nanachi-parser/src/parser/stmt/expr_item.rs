@@ -3,8 +3,8 @@ use nanachi_ast::stmt::{Stmt, StmtKind};
 use nanachi_lexer::{Span, Token};
 use winnow::prelude::*;
 
-use super::super::common::token;
 use super::super::ParserInput;
+use super::super::common::token;
 
 /// Expression statement: `expr;`
 ///

@@ -1307,22 +1307,21 @@ mod tests {
 
     #[test]
     fn field_access_place() {
-        let mir =
-            build_mir_for("struct Pt { x: i32, y: i32 } fn f(p: Pt) -> i32 { p.x }");
+        let mir = build_mir_for("struct Pt { x: i32, y: i32 } fn f(p: Pt) -> i32 { p.x }");
         let body = find_body(&mir, "f");
         use crate::mir::PlaceElem;
         // tail expr `p.x` → Assign(_0, Use(Place(p, [Field("x")])))
-        let has_field_proj = body
-            .blocks
-            .iter()
-            .flat_map(|bb| bb.statements.iter())
-            .any(|s| match &s.kind {
-                StatementKind::Assign(_, Rvalue::Use(Operand::Place(place))) => place
-                    .projection
-                    .iter()
-                    .any(|p| matches!(p, PlaceElem::Field(f) if f == "x")),
-                _ => false,
-            });
+        let has_field_proj =
+            body.blocks
+                .iter()
+                .flat_map(|bb| bb.statements.iter())
+                .any(|s| match &s.kind {
+                    StatementKind::Assign(_, Rvalue::Use(Operand::Place(place))) => place
+                        .projection
+                        .iter()
+                        .any(|p| matches!(p, PlaceElem::Field(f) if f == "x")),
+                    _ => false,
+                });
         assert!(has_field_proj, "expected field projection for p.x");
     }
 
@@ -1432,10 +1431,12 @@ mod tests {
         assert!(has_struct_agg, "User::new should produce Aggregate(Struct)");
         // `grow` has SelfParam and assigns to self.age
         let grow_body = find_body(&mir, "grow");
-        assert!(grow_body
-            .locals
-            .iter()
-            .any(|l| l.kind == LocalKind::SelfParam));
+        assert!(
+            grow_body
+                .locals
+                .iter()
+                .any(|l| l.kind == LocalKind::SelfParam)
+        );
         assert!(assign_count(grow_body, "self") >= 1);
     }
 

@@ -41,7 +41,8 @@ fn use_tree(input: &mut ParserInput<'_>) -> winnow::Result<UseTree> {
         }
         if peek(token(Token::LBrace)).parse_next(input).is_ok() {
             token(Token::LBrace).parse_next(input)?;
-            let items: Vec<UseTree> = separated(1.., use_tree, token(Token::Comma)).parse_next(input)?;
+            let items: Vec<UseTree> =
+                separated(1.., use_tree, token(Token::Comma)).parse_next(input)?;
             let _ = token(Token::Comma).parse_next(input);
             token(Token::RBrace).parse_next(input)?;
             let path = nanachi_ast::types::Path {

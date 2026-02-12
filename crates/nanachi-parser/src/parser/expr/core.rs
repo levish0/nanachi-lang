@@ -4,11 +4,11 @@ use winnow::combinator::peek;
 use winnow::prelude::*;
 use winnow::token::any;
 
+use super::super::ParserInput;
+use super::super::common::{backtrack, token};
 use super::atom::atom_parser;
 use super::infix::{infix_bp, make_infix};
 use super::postfix::postfix_op;
-use super::super::common::{backtrack, token};
-use super::super::ParserInput;
 
 pub fn expr_parser(input: &mut ParserInput<'_>) -> winnow::Result<Expr> {
     expr_bp(input, 0)

@@ -5,9 +5,9 @@ use winnow::combinator::{peek, separated};
 use winnow::prelude::*;
 use winnow::token::any;
 
-use super::core::{block_parser, expr_no_struct, expr_parser};
-use super::super::common::{backtrack, ident, token};
 use super::super::ParserInput;
+use super::super::common::{backtrack, ident, token};
+use super::core::{block_parser, expr_no_struct, expr_parser};
 
 pub fn atom_parser(input: &mut ParserInput<'_>) -> winnow::Result<Expr> {
     let next = input.input.first().ok_or(backtrack())?;
@@ -189,7 +189,8 @@ fn paren_or_tuple(input: &mut ParserInput<'_>) -> winnow::Result<Expr> {
     if token(Token::Comma).parse_next(input).is_ok() {
         let mut elements = vec![first];
         if peek(token(Token::RParen)).parse_next(input).is_err() {
-            let rest: Vec<Expr> = separated(1.., expr_parser, token(Token::Comma)).parse_next(input)?;
+            let rest: Vec<Expr> =
+                separated(1.., expr_parser, token(Token::Comma)).parse_next(input)?;
             elements.extend(rest);
             let _ = token(Token::Comma).parse_next(input);
         }
@@ -333,14 +334,13 @@ fn struct_literal(input: &mut ParserInput<'_>, path: Path) -> winnow::Result<Exp
 }
 
 fn macro_call_parser(input: &mut ParserInput<'_>, path: Path) -> winnow::Result<Expr> {
-    let (delimiter, open_tok, close_tok) =
-        if peek(token(Token::LParen)).parse_next(input).is_ok() {
-            (MacroDelimiter::Paren, Token::LParen, Token::RParen)
-        } else if peek(token(Token::LBracket)).parse_next(input).is_ok() {
-            (MacroDelimiter::Bracket, Token::LBracket, Token::RBracket)
-        } else {
-            (MacroDelimiter::Brace, Token::LBrace, Token::RBrace)
-        };
+    let (delimiter, open_tok, close_tok) = if peek(token(Token::LParen)).parse_next(input).is_ok() {
+        (MacroDelimiter::Paren, Token::LParen, Token::RParen)
+    } else if peek(token(Token::LBracket)).parse_next(input).is_ok() {
+        (MacroDelimiter::Bracket, Token::LBracket, Token::RBracket)
+    } else {
+        (MacroDelimiter::Brace, Token::LBrace, Token::RBrace)
+    };
 
     any.parse_next(input)?;
 

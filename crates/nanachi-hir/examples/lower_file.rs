@@ -29,8 +29,8 @@ fn main() {
 }
 
 fn process_file(path: &Path) -> Result<PathBuf, String> {
-    let source =
-        std::fs::read_to_string(path).map_err(|e| format!("Error reading {}: {e}", path.display()))?;
+    let source = std::fs::read_to_string(path)
+        .map_err(|e| format!("Error reading {}: {e}", path.display()))?;
 
     let tokens = nanachi_lexer::lex(&source).map_err(|e| {
         format!(
@@ -52,7 +52,8 @@ fn process_file(path: &Path) -> Result<PathBuf, String> {
         )
     })?;
 
-    let hir = nanachi_hir::lower(&ast).map_err(|e| format!("HIR lower error in {}: {e}", path.display()))?;
+    let hir = nanachi_hir::lower(&ast)
+        .map_err(|e| format!("HIR lower error in {}: {e}", path.display()))?;
 
     let out = format!("=== HIR: {} ===\n{hir:#?}\n", path.display());
     let out_path = path.with_extension("hir");
@@ -68,8 +69,8 @@ fn collect_inputs(input: &str) -> Result<Vec<PathBuf>, String> {
     }
     if path.is_dir() {
         let mut files = Vec::new();
-        for entry in
-            std::fs::read_dir(&path).map_err(|e| format!("Error reading {}: {e}", path.display()))?
+        for entry in std::fs::read_dir(&path)
+            .map_err(|e| format!("Error reading {}: {e}", path.display()))?
         {
             let entry = entry.map_err(|e| format!("Error reading dir entry: {e}"))?;
             let file_path = entry.path();

@@ -1,8 +1,8 @@
 use nanachi_ast::stmt::Stmt;
 use nanachi_lexer::Token;
 
-use super::common::backtrack;
 use super::ParserInput;
+use super::common::backtrack;
 
 mod control;
 mod expr_item;

@@ -5,8 +5,8 @@ use winnow::combinator::{peek, separated};
 use winnow::prelude::*;
 use winnow::token::any;
 
-use super::super::common::{ident, token};
 use super::super::ParserInput;
+use super::super::common::{ident, token};
 use super::pattern_parser;
 
 /// Parse identifier-based patterns:
