@@ -74,15 +74,16 @@ fn analyze_level1(
                             widen_param(param_sigs, &decl.name, ParamSig::RefMut);
                         }
                         LocalKind::Param if place.projection.is_empty() => {
-                            // Direct reassignment of param → RefMut
-                            widen_param(param_sigs, &decl.name, ParamSig::RefMut);
+                            // Direct reassignment (`x = ...`) mutates only local binding.
+                            // Mutability pass will mark this as `mut`, but caller does not
+                            // need `&mut` here.
                         }
                         LocalKind::SelfParam if !place.projection.is_empty() => {
                             // Assign to self.field → RefMut
                             widen_self(self_sig, SelfSig::RefMut);
                         }
                         LocalKind::SelfParam if place.projection.is_empty() => {
-                            widen_self(self_sig, SelfSig::RefMut);
+                            // Direct reassignment of self binding is local mutability only.
                         }
                         _ => {}
                     }
@@ -261,6 +262,37 @@ pub fn converge_cross_function(
                             }
                         }
                     }
+                    TerminatorKind::MethodCall {
+                        receiver,
+                        method,
+                        args,
+                        ..
+                    } => {
+                        if let Some(callee_key) = resolve_method_callee_key(receiver, method, body)
+                        {
+                            if let Some(callee_analysis) = functions.get(&callee_key).cloned() {
+                                if widen_caller_from_method_receiver(
+                                    receiver,
+                                    body,
+                                    callee_analysis.self_sig,
+                                    &key,
+                                    functions,
+                                ) {
+                                    changed = true;
+                                }
+
+                                if widen_caller_from_callee(
+                                    args,
+                                    body,
+                                    &callee_analysis,
+                                    &key,
+                                    functions,
+                                ) {
+                                    changed = true;
+                                }
+                            }
+                        }
+                    }
                     _ => {}
                 }
             }
@@ -324,6 +356,61 @@ fn widen_caller_from_callee(
         }
     }
     changed
+}
+
+fn widen_caller_from_method_receiver(
+    receiver: &Operand,
+    body: &MirBody,
+    callee_self_sig: Option<SelfSig>,
+    caller_key: &FnKey,
+    functions: &mut HashMap<FnKey, FnAnalysis>,
+) -> bool {
+    let Some(callee_self_sig) = callee_self_sig else {
+        return false;
+    };
+    let Some(local) = operand_root_local(receiver) else {
+        return false;
+    };
+
+    let idx = local.0 as usize;
+    if idx >= body.locals.len() {
+        return false;
+    }
+    let decl = &body.locals[idx];
+
+    let Some(caller_analysis) = functions.get_mut(caller_key) else {
+        return false;
+    };
+
+    match decl.kind {
+        LocalKind::Param => {
+            let needed = match callee_self_sig {
+                SelfSig::Ref => ParamSig::Ref,
+                SelfSig::RefMut => ParamSig::RefMut,
+                SelfSig::Owned => ParamSig::Owned,
+            };
+            let entry = caller_analysis
+                .param_sigs
+                .entry(decl.name.clone())
+                .or_insert(ParamSig::Ref);
+            if needed > *entry {
+                *entry = needed;
+                true
+            } else {
+                false
+            }
+        }
+        LocalKind::SelfParam => {
+            if let Some(ref mut self_sig) = caller_analysis.self_sig {
+                if callee_self_sig > *self_sig {
+                    *self_sig = callee_self_sig;
+                    return true;
+                }
+            }
+            false
+        }
+        _ => false,
+    }
 }
 
 // ── Trait Signature Unification ──────────────────────────────
@@ -734,6 +821,19 @@ fn resolve_callee_key(func: &Operand, _body: &MirBody) -> Option<FnKey> {
 }
 
 fn resolve_method_callee_key(receiver: &Operand, method: &str, body: &MirBody) -> Option<FnKey> {
+    if let Some(local) = operand_root_local(receiver) {
+        let idx = local.0 as usize;
+        if idx < body.locals.len()
+            && body.locals[idx].kind == LocalKind::SelfParam
+            && body.owner.is_some()
+        {
+            return Some(FnKey {
+                name: method.to_string(),
+                owner: body.owner.clone(),
+            });
+        }
+    }
+
     let owner = type_to_owner(&operand_type(receiver, body))?;
     Some(FnKey {
         name: method.to_string(),

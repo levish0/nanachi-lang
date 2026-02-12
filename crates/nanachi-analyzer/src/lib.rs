@@ -282,6 +282,14 @@ mod tests {
         assert_eq!(f.param_sigs.get("s"), Some(&ParamSig::Owned));
     }
 
+    #[test]
+    fn direct_param_reassign_keeps_param_sig_ref() {
+        let r = analyze_src("fn f(x: i32) { x = 5; }");
+        let f = get_fn(&r, "f");
+        assert_eq!(f.param_sigs.get("x"), Some(&ParamSig::Ref));
+        assert!(f.mutable_vars.contains("x"));
+    }
+
     // ── Call-site action tests ───────────────────────────────
 
     #[test]
@@ -350,6 +358,19 @@ mod tests {
         assert_eq!(call.arg_actions, vec![ArgAction::BorrowMut]);
     }
 
+    #[test]
+    fn cross_function_converges_through_method_call() {
+        let r = analyze_src(
+            r#"struct S {}
+            impl S {
+                fn inner(self, list: Vec<i32>) { list.push(1); }
+                fn outer(self, list: Vec<i32>) { self.inner(list); }
+            }"#,
+        );
+        let outer = get_method(&r, "S", "outer");
+        assert_eq!(outer.param_sigs.get("list"), Some(&ParamSig::RefMut));
+    }
+
     // ── Error propagation tests ──────────────────────────────
 
     #[test]
@@ -397,6 +418,26 @@ mod tests {
             .as_ref()
             .expect("main should still record fallible source info");
         assert!(!info.needs_result_wrap);
+        assert_eq!(info.error_types.len(), 1);
+    }
+
+    #[test]
+    fn error_propagates_through_method_call() {
+        let r = analyze_src(
+            r#"use std::fs;
+            struct S {}
+            impl S {
+                fn inner(self, path: String) -> String {
+                    fs::read_to_string(path)
+                }
+                fn outer(self, path: String) -> String {
+                    self.inner(path)
+                }
+            }"#,
+        );
+        let outer = get_method(&r, "S", "outer");
+        let info = outer.error_info.as_ref().expect("outer should be fallible");
+        assert!(info.needs_result_wrap);
         assert_eq!(info.error_types.len(), 1);
     }
 

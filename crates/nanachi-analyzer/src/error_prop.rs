@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use nanachi_hir::{HirItemKind, HirProgram, HirType};
-use nanachi_mir::{MirProgram, Operand, TerminatorKind};
+use nanachi_mir::{LocalKind, MirBody, MirProgram, Operand, TerminatorKind};
 
 use crate::hints;
 use crate::{ErrorInfo, ErrorType, FnAnalysis, FnKey};
@@ -124,6 +124,22 @@ pub fn analyze_errors(
                             }
                         }
                     }
+                    TerminatorKind::MethodCall {
+                        receiver, method, ..
+                    } => {
+                        if let Some(callee_key) = resolve_method_callee_key(receiver, method, body)
+                        {
+                            if let Some(Some(callee_info)) = result.get(&callee_key) {
+                                for et in &callee_info.error_types {
+                                    add_error_type(
+                                        &mut new_errors,
+                                        et.ty.clone(),
+                                        bb.terminator.span,
+                                    );
+                                }
+                            }
+                        }
+                    }
                     _ => {}
                 }
             }
@@ -220,6 +236,41 @@ fn resolve_callee_key(func: &Operand) -> Option<FnKey> {
         })
     } else {
         None
+    }
+}
+
+fn resolve_method_callee_key(receiver: &Operand, method: &str, body: &MirBody) -> Option<FnKey> {
+    if let Some(local) = operand_root_local(receiver) {
+        let idx = local.0 as usize;
+        if idx < body.locals.len()
+            && body.locals[idx].kind == LocalKind::SelfParam
+            && body.owner.is_some()
+        {
+            return Some(FnKey {
+                name: method.to_string(),
+                owner: body.owner.clone(),
+            });
+        }
+    }
+
+    let owner = type_to_owner(&operand_type(receiver, body))?;
+    Some(FnKey {
+        name: method.to_string(),
+        owner: Some(owner),
+    })
+}
+
+fn operand_root_local(op: &Operand) -> Option<nanachi_mir::Local> {
+    match op {
+        Operand::Place(place) => Some(place.local),
+        Operand::Constant(_) => None,
+    }
+}
+
+fn type_to_owner(ty: &HirType) -> Option<String> {
+    match ty {
+        HirType::Named { path, .. } if !path.is_empty() => Some(path.join("::")),
+        _ => None,
     }
 }
 
