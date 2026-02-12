@@ -1,0 +1,11 @@
+[package]
+name = "nanachi-hir"
+description = "Typed HIR for nanachi-lang (desugaring + type resolution)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+nanachi-ast = { workspace = true }

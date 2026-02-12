@@ -12,7 +12,7 @@
 // ============================================================
 
 // --- nanachi ---
-fn main() -> void {
+fn main() {
     println!("Hello, nanachi!");
 }
 
@@ -27,7 +27,7 @@ fn main() {
 // ============================================================
 
 // --- nanachi ---
-fn variables() -> void {
+fn variables() {
     let x: i32 = 5;
     x = 10;
     let y: i32 = 3;
@@ -44,39 +44,52 @@ fn variables() {
 
 
 // ============================================================
-// 소유권 자동
+// 소유권 자동 — 시그니처 추론 + move/clone
 // ============================================================
 
 // --- nanachi ---
-fn greet(name: String) -> void {
-    println!("Hello, {}", name);
+fn greet(name: String) {
+    println!("Hello, {}", name);          // name: 읽기만
 }
 
-fn ownership_example() -> void {
-    let a: String = String::from("hello");
-    let b: String = String::from("world");
+fn push_name(list: Vec<String>, name: String) {
+    list.push(name);                       // list: 수정, name: 소비
+}
 
+fn ownership_example() {
+    let a: String = "hello";
+    let b: String = "world";
+    let list: Vec<String> = Vec::new();
+
+    // greet은 읽기만 → 시그니처가 &str로 변환
     greet(a);
-    // a는 이후 사용 안 됨
-
     greet(b);
+
+    // push_name: name 소비 → String 유지, list 수정 → &mut
+    push_name(list, a);                    // a 이후 미사용 → move
+    push_name(list, b);                    // b 이후 사용됨 → clone
     println!("{}", b);
-    // b는 이후 사용됨
 }
 
 // --- rust ---
-fn greet(name: &String) {             // 또는 name: String (move 버전)
+fn greet(name: &str) {                          // 읽기만 → &str
     println!("Hello, {}", name);
+}
+
+fn push_name(list: &mut Vec<String>, name: String) {  // list 수정 → &mut, name 소비 → String
+    list.push(name);
 }
 
 fn ownership_example() {
     let a: String = String::from("hello");
     let b: String = String::from("world");
+    let mut list: Vec<String> = Vec::new();
 
-    greet(a);                          // a: move (이후 미사용)
-    // 또는 greet(&a) 가능하지만 불필요
+    greet(&a);                                   // 자동 borrow
+    greet(&b);                                   // 자동 borrow
 
-    greet(&b);                         // b: borrow (이후 사용됨)
+    push_name(&mut list, a);                     // a: move (이후 미사용)
+    push_name(&mut list, b.clone());             // b: clone (이후 사용됨)
     println!("{}", b);
 }
 
@@ -91,8 +104,8 @@ fn read_config(path: String) -> String {
     content
 }
 
-fn process() -> void {
-    let config: String = read_config(String::from("config.toml"));
+fn process() {
+    let config: String = read_config("config.toml");
     println!("{}", config);
 }
 
@@ -116,13 +129,13 @@ fn process() -> Result<(), std::io::Error> {            // caller도 자동 래�
 // --- nanachi ---
 fn find_user(id: i32) -> User? {
     if id == 1 {
-        Some(User { name: String::from("nanachi"), age: 3 })
+        Some(User { name: "nanachi", age: 3 })
     } else {
         None
     }
 }
 
-fn option_example() -> void {
+fn option_example() {
     let user: User? = find_user(42);
 
     // optional chaining
@@ -163,15 +176,15 @@ struct User {
 }
 
 impl User {
-    fn new(name: String, age: i32) -> User {
+    fn new(name: String, age: i32) -> User {   // 여기서 String 파라미터는 caller가 "hello" 넘기면 자동 변환
         User { name, age }
     }
 
-    fn greet(self) -> void {
+    fn greet(self) {
         println!("Hi, I'm {} ({})", self.name, self.age);
     }
 
-    fn grow(self) -> void {
+    fn grow(self) {
         self.age = self.age + 1;
     }
 }
@@ -243,7 +256,7 @@ impl Printable for User {
     }
 }
 
-fn print_it<T: Printable>(item: T) -> void {
+fn print_it<T: Printable>(item: T) {
     println!("{}", item.to_string());
 }
 
@@ -268,7 +281,7 @@ fn print_it<T: Printable>(item: &T) {  // 읽기만 → &T
 // ============================================================
 
 // --- nanachi ---
-fn control_flow() -> void {
+fn control_flow() {
     let x: i32 = 10;
     let abs: i32 = if x > 0 { x } else { -x };
 
@@ -276,6 +289,7 @@ fn control_flow() -> void {
     for n: i32 in numbers {
         println!("{}", n);
     }
+    println!("len: {}", numbers.len());    // numbers 이후 사용
 
     let count: i32 = 0;
     while count < 10 {
@@ -284,14 +298,15 @@ fn control_flow() -> void {
 }
 
 // --- rust ---
-fn control_flow() {                    // void → ()
+fn control_flow() {
     let x: i32 = 10;
     let abs: i32 = if x > 0 { x } else { -x };
 
     let numbers: Vec<i32> = vec![1, 2, 3, 4, 5];
-    for n in &numbers {                // numbers 이후 사용 여부에 따라 &/move
+    for n in &numbers {                // numbers 이후 사용됨 → borrow
         println!("{}", n);
     }
+    println!("len: {}", numbers.len());
 
     let mut count: i32 = 0;           // 재할당됨 → mut
     while count < 10 {
@@ -310,8 +325,8 @@ async fn fetch(url: String) -> String {
     response
 }
 
-async fn main() -> void {
-    let data: String = fetch(String::from("https://example.com"));
+async fn main() {
+    let data: String = fetch("https://example.com").await;
     println!("{}", data);
 }
 
@@ -334,7 +349,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 // ============================================================
 
 // --- nanachi ---
-fn interop_example() -> void {
+fn interop_example() {
     let x: i32 = 42;
 
     rust {
@@ -364,11 +379,11 @@ fn interop_example() {
 // --- nanachi ---
 fn load_users(path: String) -> Vec<User> {
     let content: String = fs::read_to_string(path);
-    let lines: Vec<String> = content.lines().map(String::from).collect();
+    let lines: Vec<String> = content.lines().collect();
     let users: Vec<User> = Vec::new();
 
     for line: String in lines {
-        let parts: Vec<String> = line.split(',').map(String::from).collect();
+        let parts: Vec<String> = line.split(',').collect();
         let name: String = parts[0];
         let age: i32 = parts[1].parse();
         users.push(User::new(name, age));

@@ -1,0 +1,17 @@
+[package]
+name = "nanachi-cli"
+description = "CLI for nanachi-lang compiler"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+nanachi-lexer = { workspace = true }
+nanachi-ast = { workspace = true }
+nanachi-parser = { workspace = true }
+nanachi-hir = { workspace = true }
+nanachi-mir = { workspace = true }
+nanachi-analyzer = { workspace = true }
+nanachi-codegen = { workspace = true }

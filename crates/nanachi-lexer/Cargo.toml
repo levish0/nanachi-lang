@@ -1,0 +1,11 @@
+[package]
+name = "nanachi-lexer"
+description = "Lexer for nanachi-lang"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+logos = { workspace = true }

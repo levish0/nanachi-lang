@@ -1,0 +1,12 @@
+[package]
+name = "nanachi-codegen"
+description = "Rust code generation for nanachi-lang (HIR + AnalysisResult → .rs)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+nanachi-hir = { workspace = true }
+nanachi-analyzer = { workspace = true }

@@ -1,7 +1,24 @@
-[package]
-name = "nanachi-lang"
+[workspace]
+members = ["crates/*"]
+resolver = "3"
+
+[workspace.package]
 version = "0.1.0"
 edition = "2024"
+rust-version = "1.93.0"
+repository = "https://github.com/levish0/nanachi-lang"
+authors = ["Levi Laine <shiueo.csh@gmail.com>"]
 
-[dependencies]
+[workspace.dependencies]
+# Internal crates
+nanachi-lexer = { path = "crates/nanachi-lexer" }
+nanachi-ast = { path = "crates/nanachi-ast" }
+nanachi-parser = { path = "crates/nanachi-parser" }
+nanachi-hir = { path = "crates/nanachi-hir" }
+nanachi-mir = { path = "crates/nanachi-mir" }
+nanachi-analyzer = { path = "crates/nanachi-analyzer" }
+nanachi-codegen = { path = "crates/nanachi-codegen" }
+
+# External dependencies
+logos = "0.16.1"
 winnow = "0.7.14"

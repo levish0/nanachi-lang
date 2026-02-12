@@ -3,7 +3,9 @@
     "allow": [
       "Bash(wc:*)",
       "Bash(codex exec:*)",
-      "Bash(codex --version:*)"
+      "Bash(codex --version:*)",
+      "Bash(cargo check:*)",
+      "Bash(cargo test:*)"
     ]
   }
 }

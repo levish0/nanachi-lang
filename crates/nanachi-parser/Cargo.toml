@@ -1,0 +1,13 @@
+[package]
+name = "nanachi-parser"
+description = "Parser for nanachi-lang (winnow-based, token stream)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+nanachi-lexer = { workspace = true }
+nanachi-ast = { workspace = true }
+winnow = { workspace = true }

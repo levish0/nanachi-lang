@@ -1,0 +1,12 @@
+[package]
+name = "nanachi-analyzer"
+description = "Semantic analysis for nanachi-lang (mutability, ownership, error propagation)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+repository.workspace = true
+authors.workspace = true
+
+[dependencies]
+nanachi-hir = { workspace = true }
+nanachi-mir = { workspace = true }
