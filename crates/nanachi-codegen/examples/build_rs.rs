@@ -54,14 +54,15 @@ fn process_file(path: &Path) -> Result<PathBuf, String> {
 
     let hir = nanachi_hir::lower(&ast)
         .map_err(|e| format!("HIR lower error in {}: {e}", path.display()))?;
-    let mir =
-        nanachi_mir::build(&hir).map_err(|e| format!("MIR build error in {}: {e}", path.display()))?;
+    let mir = nanachi_mir::build(&hir)
+        .map_err(|e| format!("MIR build error in {}: {e}", path.display()))?;
     let analysis = nanachi_analyzer::analyze(&mir, &hir);
     let rust =
         nanachi_codegen::generate(&hir, &analysis).map_err(|e| format!("Codegen error: {e}"))?;
 
     let out_path = path.with_extension("rs");
-    std::fs::write(&out_path, rust).map_err(|e| format!("Error writing {}: {e}", out_path.display()))?;
+    std::fs::write(&out_path, rust)
+        .map_err(|e| format!("Error writing {}: {e}", out_path.display()))?;
     Ok(out_path)
 }
 
@@ -72,8 +73,8 @@ fn collect_inputs(input: &str) -> Result<Vec<PathBuf>, String> {
     }
     if path.is_dir() {
         let mut files = Vec::new();
-        for entry in
-            std::fs::read_dir(&path).map_err(|e| format!("Error reading {}: {e}", path.display()))?
+        for entry in std::fs::read_dir(&path)
+            .map_err(|e| format!("Error reading {}: {e}", path.display()))?
         {
             let entry = entry.map_err(|e| format!("Error reading dir entry: {e}"))?;
             let file_path = entry.path();

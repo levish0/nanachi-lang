@@ -124,11 +124,7 @@ impl<'a> Generator<'a> {
                         HirVariantFields::Tuple(types) => {
                             out.push('(');
                             out.push_str(
-                                &types
-                                    .iter()
-                                    .map(render_type)
-                                    .collect::<Vec<_>>()
-                                    .join(", "),
+                                &types.iter().map(render_type).collect::<Vec<_>>().join(", "),
                             );
                             out.push(')');
                         }
@@ -199,11 +195,7 @@ impl<'a> Generator<'a> {
                         HirVariantFields::Tuple(types) => {
                             out.push('(');
                             out.push_str(
-                                &types
-                                    .iter()
-                                    .map(render_type)
-                                    .collect::<Vec<_>>()
-                                    .join(", "),
+                                &types.iter().map(render_type).collect::<Vec<_>>().join(", "),
                             );
                             out.push(')');
                         }
@@ -548,10 +540,7 @@ impl<'a> Generator<'a> {
             HirFnParamKind::Typed { name, ty } => {
                 let mut sig = sig_override
                     .and_then(|s| s.param_sigs.get(name).copied())
-                    .or_else(|| {
-                        ctx.analysis
-                            .and_then(|a| a.param_sigs.get(name).copied())
-                    })
+                    .or_else(|| ctx.analysis.and_then(|a| a.param_sigs.get(name).copied()))
                     .unwrap_or(ParamSig::Owned);
                 if sig == ParamSig::Ref && ctx.is_mutable(name) {
                     sig = ParamSig::Owned;
@@ -617,7 +606,11 @@ impl<'a> Generator<'a> {
             format!(" -> {}", render_type(return_ty))
         };
 
-        Ok((render, needs_result_wrap, explicit_result || needs_result_wrap))
+        Ok((
+            render,
+            needs_result_wrap,
+            explicit_result || needs_result_wrap,
+        ))
     }
 
     fn render_function_block(
@@ -710,7 +703,10 @@ impl<'a> Generator<'a> {
                 }
             }
             HirStmtKind::For {
-                pattern, iter, body, ..
+                pattern,
+                iter,
+                body,
+                ..
             } => {
                 out.push_str("for ");
                 out.push_str(&self.render_pattern(pattern, ctx, true));
@@ -818,9 +814,11 @@ impl<'a> Generator<'a> {
                 render_bin_op(*op),
                 self.render_expr(right, ctx)?
             )),
-            HirExprKind::UnaryOp { op, operand } => {
-                Ok(format!("({}{})", render_un_op(*op), self.render_expr(operand, ctx)?))
-            }
+            HirExprKind::UnaryOp { op, operand } => Ok(format!(
+                "({}{})",
+                render_un_op(*op),
+                self.render_expr(operand, ctx)?
+            )),
             HirExprKind::FnCall { func, args } => {
                 let call_site = ctx.call_site(expr.span);
                 let is_constructor = is_constructor_callee(func);
@@ -869,10 +867,8 @@ impl<'a> Generator<'a> {
                     .and_then(|site| site.arg_actions.first())
                     .copied()
                     .unwrap_or(ArgAction::Move);
-                let receiver_code = apply_method_receiver_action(
-                    self.render_expr(receiver, ctx)?,
-                    recv_action,
-                );
+                let receiver_code =
+                    apply_method_receiver_action(self.render_expr(receiver, ctx)?, recv_action);
                 let rendered_args = args
                     .iter()
                     .enumerate()
@@ -1160,7 +1156,11 @@ fn render_generics(generics: &[HirGenericParam]) -> String {
                 format!(
                     "{}: {}",
                     g.name,
-                    g.bounds.iter().map(render_type).collect::<Vec<_>>().join(" + ")
+                    g.bounds
+                        .iter()
+                        .map(render_type)
+                        .collect::<Vec<_>>()
+                        .join(" + ")
                 )
             }
         })
@@ -1194,7 +1194,11 @@ fn render_use_tree(tree: &HirUseTree) -> String {
         HirUseTree::Nested { path, items } => format!(
             "{}::{{{}}}",
             path.join("::"),
-            items.iter().map(render_use_tree).collect::<Vec<_>>().join(", ")
+            items
+                .iter()
+                .map(render_use_tree)
+                .collect::<Vec<_>>()
+                .join(", ")
         ),
     }
 }
@@ -1209,7 +1213,11 @@ fn render_type(ty: &HirType) -> String {
                 format!(
                     "{}<{}>",
                     path.join("::"),
-                    generics.iter().map(render_type).collect::<Vec<_>>().join(", ")
+                    generics
+                        .iter()
+                        .map(render_type)
+                        .collect::<Vec<_>>()
+                        .join(", ")
                 )
             }
         }
@@ -1529,7 +1537,11 @@ fn error_variant_name(ty: &HirType) -> String {
             if path.is_empty() {
                 "Error".to_string()
             } else if path.last().map(|s| s == "Error").unwrap_or(false) && path.len() >= 2 {
-                to_pascal(&format!("{}_{}", path[path.len() - 2], path[path.len() - 1]))
+                to_pascal(&format!(
+                    "{}_{}",
+                    path[path.len() - 2],
+                    path[path.len() - 1]
+                ))
             } else {
                 to_pascal(path.last().expect("non-empty path"))
             }
@@ -1555,11 +1567,7 @@ fn to_pascal(s: &str) -> String {
             out.push_str(chars.as_str());
         }
     }
-    if out.is_empty() {
-        "X".to_string()
-    } else {
-        out
-    }
+    if out.is_empty() { "X".to_string() } else { out }
 }
 
 fn collect_trait_method_sigs(
