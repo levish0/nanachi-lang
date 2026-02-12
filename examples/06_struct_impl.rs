@@ -9,7 +9,7 @@ impl User {
     }
 
     fn greet(&self) {
-        println!("Hi, I'm {} ({})" , self . name , self . age);
+        println!("Hi, I'm {} ({})", self.name, self.age);
     }
 
     fn grow(&mut self) {

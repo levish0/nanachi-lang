@@ -1,5 +1,5 @@
 fn load_users(path: &str) -> Result<Vec<User>, std::io::Error> {
-    let content: String = fs::read_to_string(&(path))?;
+    let content: String = fs::read_to_string(path)?;
     let lines: Vec<String> = content.lines().collect();
     let users: Vec<User> = Vec::new();
     for line in lines {

@@ -93,6 +93,8 @@ pub struct FnAnalysis {
     pub param_order: Vec<String>,
     /// Self parameter signature, if present.
     pub self_sig: Option<SelfSig>,
+    /// Whether the source function is async.
+    pub is_async: bool,
     /// Call-site info keyed by span of the Call/MethodCall terminator.
     pub call_sites: HashMap<Span, CallSiteInfo>,
     /// Error propagation info, if this function is fallible.
@@ -148,6 +150,7 @@ pub fn analyze(mir: &MirProgram, hir: &HirProgram) -> AnalysisResult {
                 param_sigs,
                 param_order,
                 self_sig,
+                is_async: body.is_async,
                 call_sites,
                 error_info: None,
             },
@@ -372,6 +375,19 @@ mod tests {
         );
         let outer = get_method(&r, "S", "outer");
         assert_eq!(outer.param_sigs.get("list"), Some(&ParamSig::RefMut));
+    }
+
+    #[test]
+    fn await_future_result_call_sites_are_fallible() {
+        let r = analyze_src(
+            r#"async fn fetch(url: String) -> String {
+                let response: String = reqwest::get(url).await.text().await;
+                response
+            }"#,
+        );
+        let fetch = get_fn(&r, "fetch");
+        let fallible_sites = fetch.call_sites.values().filter(|site| site.is_fallible).count();
+        assert_eq!(fallible_sites, 2);
     }
 
     // ── Error propagation tests ──────────────────────────────

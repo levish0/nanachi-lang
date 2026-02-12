@@ -496,6 +496,7 @@ pub fn finalize_call_sites(
     key: &FnKey,
 ) {
     let mut new_call_sites = HashMap::new();
+    let call_return_kinds = collect_call_return_kinds(body, functions);
 
     for (block_idx, bb) in body.blocks.iter().enumerate() {
         let block_id = nanachi_mir::BlockId(block_idx as u32);
@@ -529,11 +530,11 @@ pub fn finalize_call_sites(
                     .and_then(|method_key| functions.get(method_key));
                 let hint_fallible = hint.as_ref().map_or(false, |h| h.returns_result);
                 let user_fallible = callee_analysis
-                    .and_then(|analysis| analysis.error_info.as_ref())
-                    .map_or(false, |info| {
-                        info.needs_result_wrap || !info.error_types.is_empty()
-                    });
-                let is_fallible = hint_fallible || user_fallible;
+                    .filter(|analysis| !analysis.is_async)
+                    .map_or(false, analysis_is_fallible);
+                let await_fallible = method == "await"
+                    && operand_is_future_result(receiver, &call_return_kinds);
+                let is_fallible = hint_fallible || user_fallible || await_fallible;
 
                 let mut arg_actions = Vec::new();
                 // Receiver action: std hint > user-defined method sig > default borrow.
@@ -632,6 +633,123 @@ fn compute_arg_actions(
         .collect()
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum CallReturnKind {
+    Value,
+    Result,
+    FutureResult,
+}
+
+fn analysis_is_fallible(analysis: &FnAnalysis) -> bool {
+    analysis.error_info.as_ref().map_or(false, |info| {
+        info.needs_result_wrap || !info.error_types.is_empty()
+    })
+}
+
+fn collect_call_return_kinds(
+    body: &MirBody,
+    functions: &HashMap<FnKey, FnAnalysis>,
+) -> HashMap<Local, CallReturnKind> {
+    let mut kinds = HashMap::new();
+
+    for bb in &body.blocks {
+        match &bb.terminator.kind {
+            TerminatorKind::Call { func, dest, .. } => {
+                let callee_key = resolve_callee_key(func, body);
+                let kind = call_return_kind_for_call(func, &callee_key, functions);
+                kinds.insert(dest.local, kind);
+            }
+            TerminatorKind::MethodCall {
+                receiver,
+                method,
+                dest,
+                ..
+            } if method != "await" => {
+                let kind = call_return_kind_for_method(receiver, method, body, functions);
+                kinds.insert(dest.local, kind);
+            }
+            _ => {}
+        }
+    }
+
+    // `await` consumes a future; after await the produced value is no longer a future.
+    for bb in &body.blocks {
+        if let TerminatorKind::MethodCall { method, dest, .. } = &bb.terminator.kind {
+            if method == "await" {
+                kinds.insert(dest.local, CallReturnKind::Value);
+            }
+        }
+    }
+
+    kinds
+}
+
+fn call_return_kind_for_call(
+    func: &Operand,
+    callee_key: &Option<FnKey>,
+    functions: &HashMap<FnKey, FnAnalysis>,
+) -> CallReturnKind {
+    if let Some(path) = operand_path(func) {
+        if let Some(hint) = hints::function_hint(&path) {
+            if hint.returns_future_result {
+                return CallReturnKind::FutureResult;
+            }
+            if hint.returns_result {
+                return CallReturnKind::Result;
+            }
+        }
+    }
+
+    if let Some(key) = callee_key {
+        if let Some(analysis) = functions.get(key) {
+            if analysis_is_fallible(analysis) {
+                if analysis.is_async {
+                    return CallReturnKind::FutureResult;
+                }
+                return CallReturnKind::Result;
+            }
+        }
+    }
+
+    CallReturnKind::Value
+}
+
+fn call_return_kind_for_method(
+    receiver: &Operand,
+    method: &str,
+    body: &MirBody,
+    functions: &HashMap<FnKey, FnAnalysis>,
+) -> CallReturnKind {
+    let recv_type = operand_type(receiver, body);
+    let hint = hints::method_hint(&recv_type, method);
+    let callee_key = resolve_method_callee_key(receiver, method, body);
+    let callee_analysis = callee_key.as_ref().and_then(|k| functions.get(k));
+
+    let hint_returns_result = hint.as_ref().map_or(false, |h| h.returns_result);
+    let hint_returns_future_result = hint.as_ref().map_or(false, |h| h.returns_future_result);
+
+    let user_returns_result = callee_analysis.map_or(false, |analysis| {
+        !analysis.is_async && analysis_is_fallible(analysis)
+    });
+    let user_returns_future_result = callee_analysis.map_or(false, |analysis| {
+        analysis.is_async && analysis_is_fallible(analysis)
+    });
+
+    if hint_returns_future_result || user_returns_future_result {
+        CallReturnKind::FutureResult
+    } else if hint_returns_result || user_returns_result {
+        CallReturnKind::Result
+    } else {
+        CallReturnKind::Value
+    }
+}
+
+fn operand_is_future_result(op: &Operand, call_return_kinds: &HashMap<Local, CallReturnKind>) -> bool {
+    operand_root_local(op)
+        .and_then(|local| call_return_kinds.get(&local).copied())
+        .map_or(false, |kind| kind == CallReturnKind::FutureResult)
+}
+
 fn check_fallibility_for_call(
     func: &Operand,
     callee_key: &Option<FnKey>,
@@ -643,13 +761,16 @@ fn check_fallibility_for_call(
             if hint.returns_result {
                 return true;
             }
+            if hint.returns_future_result {
+                return false;
+            }
         }
     }
     // Check cross-function
     if let Some(key) = callee_key {
         if let Some(analysis) = functions.get(key) {
-            if let Some(ref info) = analysis.error_info {
-                return info.needs_result_wrap || !info.error_types.is_empty();
+            if analysis_is_fallible(analysis) && !analysis.is_async {
+                return true;
             }
         }
     }

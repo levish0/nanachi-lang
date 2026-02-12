@@ -635,12 +635,21 @@ impl<'a> Generator<'a> {
             }
         }
 
-        for stmt in &block.stmts[..stmt_end] {
-            out.push_str(&self.render_stmt(stmt, ctx, indent + 1, false)?);
+        let stmt_slice = &block.stmts[..stmt_end];
+        let tail = block.tail_expr.as_deref().or(inferred_tail);
+
+        for (idx, stmt) in stmt_slice.iter().enumerate() {
+            let later_stmts = &stmt_slice[idx + 1..];
+            out.push_str(&self.render_stmt(
+                stmt,
+                ctx,
+                indent + 1,
+                false,
+                later_stmts,
+                tail,
+            )?);
             out.push('\n');
         }
-
-        let tail = block.tail_expr.as_deref().or(inferred_tail);
 
         if let Some(tail) = tail {
             push_indent(&mut out, indent + 1);
@@ -668,6 +677,8 @@ impl<'a> Generator<'a> {
         ctx: &FunctionCtx<'_>,
         indent: usize,
         compact: bool,
+        later_stmts: &[HirStmt],
+        later_tail: Option<&HirExpr>,
     ) -> Result<String, CodegenError> {
         let mut out = String::new();
         if !compact {
@@ -711,7 +722,9 @@ impl<'a> Generator<'a> {
                 out.push_str("for ");
                 out.push_str(&self.render_pattern(pattern, ctx, true));
                 out.push_str(" in ");
-                out.push_str(&self.render_expr(iter, ctx)?);
+                let iter_code = self.render_expr(iter, ctx)?;
+                let iter_code = maybe_borrow_for_iter(iter, &iter_code, ctx, later_stmts, later_tail);
+                out.push_str(&iter_code);
                 if compact {
                     out.push(' ');
                     out.push_str(&self.render_block_compact(body, ctx)?);
@@ -775,8 +788,16 @@ impl<'a> Generator<'a> {
     ) -> Result<String, CodegenError> {
         let mut out = String::new();
         out.push_str("{\n");
-        for stmt in &block.stmts {
-            out.push_str(&self.render_stmt(stmt, ctx, indent + 1, false)?);
+        for (idx, stmt) in block.stmts.iter().enumerate() {
+            let later_stmts = &block.stmts[idx + 1..];
+            out.push_str(&self.render_stmt(
+                stmt,
+                ctx,
+                indent + 1,
+                false,
+                later_stmts,
+                block.tail_expr.as_deref(),
+            )?);
             out.push('\n');
         }
         if let Some(tail) = &block.tail_expr {
@@ -795,8 +816,16 @@ impl<'a> Generator<'a> {
         ctx: &FunctionCtx<'_>,
     ) -> Result<String, CodegenError> {
         let mut parts = Vec::new();
-        for stmt in &block.stmts {
-            parts.push(self.render_stmt(stmt, ctx, 0, true)?);
+        for (idx, stmt) in block.stmts.iter().enumerate() {
+            let later_stmts = &block.stmts[idx + 1..];
+            parts.push(self.render_stmt(
+                stmt,
+                ctx,
+                0,
+                true,
+                later_stmts,
+                block.tail_expr.as_deref(),
+            )?);
         }
         if let Some(tail) = &block.tail_expr {
             parts.push(self.render_expr(tail, ctx)?);
@@ -836,6 +865,7 @@ impl<'a> Generator<'a> {
                                 .copied()
                                 .unwrap_or(ArgAction::Move)
                         };
+                        let action = normalize_arg_action_for_expr(arg, action, ctx);
                         Ok(apply_arg_action(arg_code, action))
                     })
                     .collect::<Result<Vec<_>, CodegenError>>()?;
@@ -854,7 +884,7 @@ impl<'a> Generator<'a> {
                 "{}!{}{}{}",
                 path.join("::"),
                 macro_open(*delimiter),
-                tokens,
+                normalize_macro_tokens(tokens),
                 macro_close(*delimiter)
             )),
             HirExprKind::MethodCall {
@@ -878,6 +908,7 @@ impl<'a> Generator<'a> {
                             .and_then(|site| site.arg_actions.get(idx + 1))
                             .copied()
                             .unwrap_or(ArgAction::Move);
+                        let action = normalize_arg_action_for_expr(arg, action, ctx);
                         Ok(apply_arg_action(arg_code, action))
                     })
                     .collect::<Result<Vec<_>, CodegenError>>()?;
@@ -942,7 +973,22 @@ impl<'a> Generator<'a> {
                 out.push_str(" }");
                 Ok(out)
             }
-            HirExprKind::Await { expr } => Ok(format!("({}).await", self.render_expr(expr, ctx)?)),
+            HirExprKind::Await { expr: awaited_expr } => {
+                let inner = self.render_expr(awaited_expr, ctx)?;
+                let mut awaited = format!("({inner}).await");
+                let site_fallible = ctx
+                    .call_site(expr.span)
+                    .map(|site| site.is_fallible)
+                    .unwrap_or(false);
+                if site_fallible {
+                    if ctx.allow_question_mark {
+                        awaited.push('?');
+                    } else {
+                        awaited.push_str(".expect(\"fallible call failed\")");
+                    }
+                }
+                Ok(awaited)
+            }
             HirExprKind::Assign { target, value } => Ok(format!(
                 "{} = {}",
                 self.render_expr(target, ctx)?,
@@ -1353,6 +1399,88 @@ fn macro_close(d: MacroDelimiter) -> &'static str {
     }
 }
 
+fn normalize_macro_tokens(tokens: &str) -> String {
+    let chars: Vec<char> = tokens.chars().collect();
+    let mut out = String::new();
+    let mut i = 0;
+    let mut in_string = false;
+    let mut in_char = false;
+    let mut escape = false;
+
+    while i < chars.len() {
+        let c = chars[i];
+
+        if in_string {
+            out.push(c);
+            if escape {
+                escape = false;
+            } else if c == '\\' {
+                escape = true;
+            } else if c == '"' {
+                in_string = false;
+            }
+            i += 1;
+            continue;
+        }
+        if in_char {
+            out.push(c);
+            if escape {
+                escape = false;
+            } else if c == '\\' {
+                escape = true;
+            } else if c == '\'' {
+                in_char = false;
+            }
+            i += 1;
+            continue;
+        }
+
+        if c == '"' {
+            in_string = true;
+            out.push(c);
+            i += 1;
+            continue;
+        }
+        if c == '\'' {
+            in_char = true;
+            out.push(c);
+            i += 1;
+            continue;
+        }
+
+        if c.is_whitespace() {
+            let prev = out.chars().rev().find(|ch| !ch.is_whitespace());
+            let mut j = i + 1;
+            while j < chars.len() && chars[j].is_whitespace() {
+                j += 1;
+            }
+            let next = if j < chars.len() { Some(chars[j]) } else { None };
+
+            let strip = is_tight_left(prev) || is_tight_right(next);
+            if !strip && !out.ends_with(' ') && !out.is_empty() && next.is_some() {
+                out.push(' ');
+            }
+            i = j;
+            continue;
+        }
+
+        out.push(c);
+        i += 1;
+    }
+
+    out.trim().to_string()
+}
+
+fn is_tight_left(c: Option<char>) -> bool {
+    c.map(|ch| matches!(ch, '.' | ':' | '(' | '[' | '{' | '!' | '&'))
+        .unwrap_or(false)
+}
+
+fn is_tight_right(c: Option<char>) -> bool {
+    c.map(|ch| matches!(ch, '.' | ',' | ';' | ':' | ')' | ']' | '}' | '(' | '[' | '{' | '!'))
+        .unwrap_or(false)
+}
+
 fn push_indent(out: &mut String, indent: usize) {
     for _ in 0..indent {
         out.push_str(INDENT);
@@ -1373,6 +1501,167 @@ fn apply_method_receiver_action(expr: String, action: ArgAction) -> String {
         // Rust method syntax auto-borrows receiver for &self/&mut self methods.
         ArgAction::Borrow | ArgAction::BorrowMut | ArgAction::Move => expr,
         ArgAction::Clone => format!("({expr}).clone()"),
+    }
+}
+
+fn normalize_arg_action_for_expr(expr: &HirExpr, action: ArgAction, ctx: &FunctionCtx<'_>) -> ArgAction {
+    match action {
+        ArgAction::Borrow | ArgAction::BorrowMut if expr_is_reference_like(expr, ctx) => {
+            ArgAction::Move
+        }
+        _ => action,
+    }
+}
+
+fn expr_is_reference_like(expr: &HirExpr, ctx: &FunctionCtx<'_>) -> bool {
+    let Some(name) = single_path_name(expr) else {
+        return false;
+    };
+    if name == "self" {
+        return ctx
+            .analysis
+            .and_then(|a| a.self_sig)
+            .map(|sig| matches!(sig, SelfSig::Ref | SelfSig::RefMut))
+            .unwrap_or(false);
+    }
+    ctx.analysis
+        .and_then(|a| a.param_sigs.get(name))
+        .map(|sig| matches!(sig, ParamSig::Ref | ParamSig::RefMut))
+        .unwrap_or(false)
+}
+
+fn maybe_borrow_for_iter(
+    iter: &HirExpr,
+    iter_code: &str,
+    ctx: &FunctionCtx<'_>,
+    later_stmts: &[HirStmt],
+    later_tail: Option<&HirExpr>,
+) -> String {
+    let Some(name) = single_path_name(iter) else {
+        return iter_code.to_string();
+    };
+    let used_after = later_stmts.iter().any(|s| stmt_uses_name(s, name))
+        || later_tail.map(|e| expr_uses_name(e, name)).unwrap_or(false);
+    if !used_after {
+        return iter_code.to_string();
+    }
+    if expr_is_reference_like(iter, ctx) {
+        return iter_code.to_string();
+    }
+    format!("&({iter_code})")
+}
+
+fn single_path_name(expr: &HirExpr) -> Option<&str> {
+    match &expr.kind {
+        HirExprKind::Path(path) if path.len() == 1 => Some(path[0].as_str()),
+        _ => None,
+    }
+}
+
+fn stmt_uses_name(stmt: &HirStmt, name: &str) -> bool {
+    match &stmt.kind {
+        HirStmtKind::Let { value, .. } => value.as_ref().map(|e| expr_uses_name(e, name)).unwrap_or(false),
+        HirStmtKind::Expr(expr) => expr_uses_name(expr, name),
+        HirStmtKind::While { condition, body } => {
+            expr_uses_name(condition, name) || block_uses_name(body, name)
+        }
+        HirStmtKind::For { iter, body, .. } => expr_uses_name(iter, name) || block_uses_name(body, name),
+        HirStmtKind::Loop { body } => block_uses_name(body, name),
+        HirStmtKind::Break(expr) => expr.as_ref().map(|e| expr_uses_name(e, name)).unwrap_or(false),
+        HirStmtKind::Continue => false,
+        HirStmtKind::Item(item) => match &item.kind {
+            HirItemKind::Function(_)
+            | HirItemKind::Struct(_)
+            | HirItemKind::Enum(_)
+            | HirItemKind::Trait(_)
+            | HirItemKind::Impl(_)
+            | HirItemKind::Use(_) => false,
+            HirItemKind::RustBlock(rb) => rb.code.contains(name),
+        },
+    }
+}
+
+fn block_uses_name(block: &HirBlock, name: &str) -> bool {
+    block.stmts.iter().any(|s| stmt_uses_name(s, name))
+        || block
+            .tail_expr
+            .as_ref()
+            .map(|e| expr_uses_name(e, name))
+            .unwrap_or(false)
+}
+
+fn expr_uses_name(expr: &HirExpr, name: &str) -> bool {
+    match &expr.kind {
+        HirExprKind::Literal(_) => false,
+        HirExprKind::Path(path) => path.len() == 1 && path[0] == name,
+        HirExprKind::BinaryOp { left, right, .. } => {
+            expr_uses_name(left, name) || expr_uses_name(right, name)
+        }
+        HirExprKind::UnaryOp { operand, .. } => expr_uses_name(operand, name),
+        HirExprKind::FnCall { func, args } => {
+            expr_uses_name(func, name) || args.iter().any(|a| expr_uses_name(a, name))
+        }
+        HirExprKind::MacroCall { tokens, .. } => tokens.contains(name),
+        HirExprKind::MethodCall { receiver, args, .. } => {
+            expr_uses_name(receiver, name) || args.iter().any(|a| expr_uses_name(a, name))
+        }
+        HirExprKind::FieldAccess { receiver, .. } => expr_uses_name(receiver, name),
+        HirExprKind::OptionalChain { receiver, access } => {
+            expr_uses_name(receiver, name)
+                || match access {
+                    HirOptionalAccess::Field(_) => false,
+                    HirOptionalAccess::Method { args, .. } => {
+                        args.iter().any(|a| expr_uses_name(a, name))
+                    }
+                }
+        }
+        HirExprKind::NullCoalesce { expr, default } => {
+            expr_uses_name(expr, name) || expr_uses_name(default, name)
+        }
+        HirExprKind::Index { receiver, index } => {
+            expr_uses_name(receiver, name) || expr_uses_name(index, name)
+        }
+        HirExprKind::Block(block) => block_uses_name(block, name),
+        HirExprKind::If {
+            condition,
+            then_block,
+            else_expr,
+        } => {
+            expr_uses_name(condition, name)
+                || block_uses_name(then_block, name)
+                || else_expr
+                    .as_ref()
+                    .map(|e| expr_uses_name(e, name))
+                    .unwrap_or(false)
+        }
+        HirExprKind::Match { expr, arms } => {
+            expr_uses_name(expr, name)
+                || arms.iter().any(|arm| {
+                    arm.guard
+                        .as_ref()
+                        .map(|g| expr_uses_name(g, name))
+                        .unwrap_or(false)
+                        || expr_uses_name(&arm.body, name)
+                })
+        }
+        HirExprKind::Await { expr } => expr_uses_name(expr, name),
+        HirExprKind::Assign { target, value } => {
+            expr_uses_name(target, name) || expr_uses_name(value, name)
+        }
+        HirExprKind::CompoundAssign { target, value, .. } => {
+            expr_uses_name(target, name) || expr_uses_name(value, name)
+        }
+        HirExprKind::StructLiteral { fields, .. } => fields
+            .iter()
+            .filter_map(|f| f.value.as_ref())
+            .any(|v| expr_uses_name(v, name)),
+        HirExprKind::Range { start, end, .. } => {
+            start.as_ref().map(|e| expr_uses_name(e, name)).unwrap_or(false)
+                || end.as_ref().map(|e| expr_uses_name(e, name)).unwrap_or(false)
+        }
+        HirExprKind::Closure { body, .. } => expr_uses_name(body, name),
+        HirExprKind::Return(expr) => expr.as_ref().map(|e| expr_uses_name(e, name)).unwrap_or(false),
+        HirExprKind::Tuple(items) => items.iter().any(|e| expr_uses_name(e, name)),
     }
 }
 
@@ -1686,7 +1975,8 @@ mod tests {
             }"#,
         );
         assert!(rs.contains("fn read_config(path: &str) -> Result<String, std::io::Error>"));
-        assert!(rs.contains("fs::read_to_string(&(path))?"));
+        assert!(rs.contains("fs::read_to_string(path)?"));
+        assert!(!rs.contains("fs::read_to_string(&(path))?"));
     }
 
     #[test]
@@ -1752,5 +2042,41 @@ mod tests {
         assert!(rs.contains("list.push(name);"));
         assert!(!rs.contains("&mut (list).push"));
         assert!(!rs.contains("&(list).push"));
+    }
+
+    #[test]
+    fn for_loop_borrows_iter_when_used_after() {
+        let rs = generate_src(
+            r#"fn control_flow() {
+                let numbers: Vec<i32> = vec![1, 2, 3];
+                for n: i32 in numbers {
+                    println!("{}", n);
+                }
+                println!("len: {}", numbers.len());
+            }"#,
+        );
+        assert!(rs.contains("for n in &(numbers)"));
+        assert!(rs.contains("numbers.len()") || rs.contains("numbers . len"));
+    }
+
+    #[test]
+    fn macro_tokens_are_compacted() {
+        let rs = generate_src(
+            r#"fn greet(name: String) {
+                println!("Hello, {}", name);
+            }"#,
+        );
+        assert!(rs.contains("println!(\"Hello, {}\", name);"));
+    }
+
+    #[test]
+    fn reqwest_get_text_chain_uses_expect_in_non_result_fn() {
+        let rs = generate_src(
+            r#"async fn fetch(url: String) -> String {
+                let response: String = reqwest::get(url).await.text().await;
+                response
+            }"#,
+        );
+        assert!(rs.contains(".await.expect(\"fallible call failed\")"));
     }
 }
