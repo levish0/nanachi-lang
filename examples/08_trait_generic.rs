@@ -1,0 +1,13 @@
+trait Printable {
+    fn to_string(&self) -> String;
+}
+
+impl Printable for User {
+    fn to_string(&self) -> String {
+        format!("{} (age {})" , self . name , self . age)
+    }
+}
+
+fn print_it<T: Printable>(item: &T) {
+    println!("{}" , item . to_string ( ));
+}

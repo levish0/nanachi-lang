@@ -1,0 +1,8 @@
+enum Shape {
+    Circle { radius: f64 },
+    Rectangle { width: f64, height: f64 },
+}
+
+fn area(shape: &Shape) -> f64 {
+    match shape { Shape::Circle { radius } => ((3.14159 * radius) * radius), Shape::Rectangle { width, height } => (width * height), }
+}
