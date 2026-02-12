@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(wc:*)",
+      "Bash(codex exec:*)",
+      "Bash(codex --version:*)"
+    ]
+  }
+}

@@ -1,0 +1,394 @@
+// ============================================================
+// nanachi-lang sketch
+// "이런 코드를 쓸 수 있는 언어를 만든다"
+// Rust로 트랜스파일됨. mut/ownership/error 전파는 컴파일러가 자동.
+//
+// 형식: nanachi 코드 → 생성되는 Rust 코드
+// ============================================================
+
+
+// ============================================================
+// Hello World
+// ============================================================
+
+// --- nanachi ---
+fn main() -> void {
+    println!("Hello, nanachi!");
+}
+
+// --- rust ---
+fn main() {
+    println!("Hello, nanachi!");
+}
+
+
+// ============================================================
+// 변수 — mut 자동 추론
+// ============================================================
+
+// --- nanachi ---
+fn variables() -> void {
+    let x: i32 = 5;
+    x = 10;
+    let y: i32 = 3;
+    println!("{} {}", x, y);
+}
+
+// --- rust ---
+fn variables() {
+    let mut x: i32 = 5;       // x는 재할당됨 → mut
+    x = 10;
+    let y: i32 = 3;           // y는 재할당 안 됨 → immutable
+    println!("{} {}", x, y);
+}
+
+
+// ============================================================
+// 소유권 자동
+// ============================================================
+
+// --- nanachi ---
+fn greet(name: String) -> void {
+    println!("Hello, {}", name);
+}
+
+fn ownership_example() -> void {
+    let a: String = String::from("hello");
+    let b: String = String::from("world");
+
+    greet(a);
+    // a는 이후 사용 안 됨
+
+    greet(b);
+    println!("{}", b);
+    // b는 이후 사용됨
+}
+
+// --- rust ---
+fn greet(name: &String) {             // 또는 name: String (move 버전)
+    println!("Hello, {}", name);
+}
+
+fn ownership_example() {
+    let a: String = String::from("hello");
+    let b: String = String::from("world");
+
+    greet(a);                          // a: move (이후 미사용)
+    // 또는 greet(&a) 가능하지만 불필요
+
+    greet(&b);                         // b: borrow (이후 사용됨)
+    println!("{}", b);
+}
+
+
+// ============================================================
+// 에러 자동 전파
+// ============================================================
+
+// --- nanachi ---
+fn read_config(path: String) -> String {
+    let content: String = fs::read_to_string(path);
+    content
+}
+
+fn process() -> void {
+    let config: String = read_config(String::from("config.toml"));
+    println!("{}", config);
+}
+
+// --- rust ---
+fn read_config(path: String) -> Result<String, std::io::Error> {
+    let content: String = fs::read_to_string(path)?;   // ? 자동 삽입
+    Ok(content)                                         // Ok 래핑 자동
+}
+
+fn process() -> Result<(), std::io::Error> {            // caller도 자동 래핑
+    let config: String = read_config(String::from("config.toml"))?;
+    println!("{}", config);
+    Ok(())
+}
+
+
+// ============================================================
+// Option (T?)
+// ============================================================
+
+// --- nanachi ---
+fn find_user(id: i32) -> User? {
+    if id == 1 {
+        Some(User { name: String::from("nanachi"), age: 3 })
+    } else {
+        None
+    }
+}
+
+fn option_example() -> void {
+    let user: User? = find_user(42);
+
+    // optional chaining
+    let name: String? = find_user(1)?.name;
+
+    // default value
+    let age: i32 = find_user(1)?.age ?? 0;
+}
+
+// --- rust ---
+fn find_user(id: i32) -> Option<User> {
+    if id == 1 {
+        Some(User { name: String::from("nanachi"), age: 3 })
+    } else {
+        None
+    }
+}
+
+fn option_example() {
+    let user: Option<User> = find_user(42);
+
+    // optional chaining
+    let name: Option<String> = find_user(1).map(|u| u.name);
+
+    // default value
+    let age: i32 = find_user(1).map(|u| u.age).unwrap_or(0);
+}
+
+
+// ============================================================
+// Struct — self 소유권 자동
+// ============================================================
+
+// --- nanachi ---
+struct User {
+    name: String,
+    age: i32,
+}
+
+impl User {
+    fn new(name: String, age: i32) -> User {
+        User { name, age }
+    }
+
+    fn greet(self) -> void {
+        println!("Hi, I'm {} ({})", self.name, self.age);
+    }
+
+    fn grow(self) -> void {
+        self.age = self.age + 1;
+    }
+}
+
+// --- rust ---
+struct User {
+    name: String,
+    age: i32,
+}
+
+impl User {
+    fn new(name: String, age: i32) -> User {
+        User { name, age }
+    }
+
+    fn greet(&self) {                  // 읽기만 → &self
+        println!("Hi, I'm {} ({})", self.name, self.age);
+    }
+
+    fn grow(&mut self) {               // 수정함 → &mut self
+        self.age = self.age + 1;
+    }
+}
+
+
+// ============================================================
+// Enum + Match
+// ============================================================
+
+// --- nanachi ---
+enum Shape {
+    Circle { radius: f64 },
+    Rectangle { width: f64, height: f64 },
+}
+
+fn area(shape: Shape) -> f64 {
+    match shape {
+        Shape::Circle { radius } => 3.14159 * radius * radius,
+        Shape::Rectangle { width, height } => width * height,
+    }
+}
+
+// --- rust ---
+enum Shape {
+    Circle { radius: f64 },
+    Rectangle { width: f64, height: f64 },
+}
+
+fn area(shape: &Shape) -> f64 {        // shape 이후 사용 여부에 따라 &/move
+    match shape {
+        Shape::Circle { radius } => 3.14159 * radius * radius,
+        Shape::Rectangle { width, height } => width * height,
+    }
+}
+
+
+// ============================================================
+// Trait + 제네릭
+// ============================================================
+
+// --- nanachi ---
+trait Printable {
+    fn to_string(self) -> String;
+}
+
+impl Printable for User {
+    fn to_string(self) -> String {
+        format!("{} (age {})", self.name, self.age)
+    }
+}
+
+fn print_it<T: Printable>(item: T) -> void {
+    println!("{}", item.to_string());
+}
+
+// --- rust ---
+trait Printable {
+    fn to_string(&self) -> String;     // 읽기만 → &self
+}
+
+impl Printable for User {
+    fn to_string(&self) -> String {
+        format!("{} (age {})", self.name, self.age)
+    }
+}
+
+fn print_it<T: Printable>(item: &T) {  // 읽기만 → &T
+    println!("{}", item.to_string());
+}
+
+
+// ============================================================
+// 제어 흐름
+// ============================================================
+
+// --- nanachi ---
+fn control_flow() -> void {
+    let x: i32 = 10;
+    let abs: i32 = if x > 0 { x } else { -x };
+
+    let numbers: Vec<i32> = vec![1, 2, 3, 4, 5];
+    for n: i32 in numbers {
+        println!("{}", n);
+    }
+
+    let count: i32 = 0;
+    while count < 10 {
+        count = count + 1;
+    }
+}
+
+// --- rust ---
+fn control_flow() {                    // void → ()
+    let x: i32 = 10;
+    let abs: i32 = if x > 0 { x } else { -x };
+
+    let numbers: Vec<i32> = vec![1, 2, 3, 4, 5];
+    for n in &numbers {                // numbers 이후 사용 여부에 따라 &/move
+        println!("{}", n);
+    }
+
+    let mut count: i32 = 0;           // 재할당됨 → mut
+    while count < 10 {
+        count = count + 1;
+    }
+}
+
+
+// ============================================================
+// Async
+// ============================================================
+
+// --- nanachi ---
+async fn fetch(url: String) -> String {
+    let response: String = reqwest::get(url).await.text().await;
+    response
+}
+
+async fn main() -> void {
+    let data: String = fetch(String::from("https://example.com"));
+    println!("{}", data);
+}
+
+// --- rust ---
+async fn fetch(url: String) -> Result<String, reqwest::Error> {
+    let response: String = reqwest::get(url).await?.text().await?;  // ? 자동
+    Ok(response)
+}
+
+#[tokio::main]                         // 자동 삽입
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let data: String = fetch(String::from("https://example.com")).await?;
+    println!("{}", data);
+    Ok(())
+}
+
+
+// ============================================================
+// Rust 직접 삽입
+// ============================================================
+
+// --- nanachi ---
+fn interop_example() -> void {
+    let x: i32 = 42;
+
+    rust {
+        use std::collections::HashMap;
+        let mut map = HashMap::new();
+        map.insert("answer", x);
+        println!("{:?}", map);
+    }
+}
+
+// --- rust ---
+fn interop_example() {
+    let x: i32 = 42;
+
+    // rust { } 블록 내용이 그대로 출력됨
+    use std::collections::HashMap;
+    let mut map = HashMap::new();
+    map.insert("answer", x);
+    println!("{:?}", map);
+}
+
+
+// ============================================================
+// 종합 예제 — nanachi로 쓰면 이만큼 줄어든다
+// ============================================================
+
+// --- nanachi ---
+fn load_users(path: String) -> Vec<User> {
+    let content: String = fs::read_to_string(path);
+    let lines: Vec<String> = content.lines().map(String::from).collect();
+    let users: Vec<User> = Vec::new();
+
+    for line: String in lines {
+        let parts: Vec<String> = line.split(',').map(String::from).collect();
+        let name: String = parts[0];
+        let age: i32 = parts[1].parse();
+        users.push(User::new(name, age));
+    }
+
+    users
+}
+
+// --- rust ---
+fn load_users(path: String) -> Result<Vec<User>, Box<dyn std::error::Error>> {
+    let content: String = fs::read_to_string(path)?;
+    let lines: Vec<String> = content.lines().map(String::from).collect();
+    let mut users: Vec<User> = Vec::new();
+
+    for line in &lines {
+        let parts: Vec<&str> = line.split(',').collect();
+        let name: String = parts[0].to_string();
+        let age: i32 = parts[1].parse()?;
+        users.push(User::new(name, age));
+    }
+
+    Ok(users)
+}
