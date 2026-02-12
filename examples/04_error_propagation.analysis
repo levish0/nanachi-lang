@@ -1,13 +1,13 @@
 === Analysis: examples\04_error_propagation.nanachi ===
 
---- process ---
-  call_sites: 1 total
-    @148..174: fallible=true, actions=[Borrow]
-  error_info: needs_wrap=true, types=1, enum=None
-
 --- read_config ---
   param path: Ref
   call_sites: 1 total
     @67..91: fallible=true, actions=[Borrow]
+  error_info: needs_wrap=true, types=1, enum=None
+
+--- process ---
+  call_sites: 1 total
+    @148..174: fallible=true, actions=[Borrow]
   error_info: needs_wrap=true, types=1, enum=None
 

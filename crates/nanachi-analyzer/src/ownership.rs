@@ -280,11 +280,13 @@ fn widen_caller_from_callee(
 ) -> bool {
     let mut changed = false;
 
-    // Build a mapping from callee param position to sig
-    let callee_param_sigs: Vec<_> = callee_analysis.param_sigs.values().copied().collect();
-
     for (i, arg) in args.iter().enumerate() {
-        if let Some(&callee_sig) = callee_param_sigs.get(i) {
+        let callee_sig = callee_analysis
+            .param_order
+            .get(i)
+            .and_then(|name| callee_analysis.param_sigs.get(name).copied());
+
+        if let Some(callee_sig) = callee_sig {
             if let Some(local) = operand_root_local(arg) {
                 let idx = local.0 as usize;
                 if idx < body.locals.len() {
@@ -443,12 +445,27 @@ pub fn finalize_call_sites(
             } => {
                 let recv_type = operand_type(receiver, body);
                 let hint = hints::method_hint(&recv_type, method);
-                let is_fallible = hint.as_ref().map_or(false, |h| h.returns_result);
+                let callee_key = resolve_method_callee_key(receiver, method, body);
+                let callee_analysis = callee_key
+                    .as_ref()
+                    .and_then(|method_key| functions.get(method_key));
+                let hint_fallible = hint.as_ref().map_or(false, |h| h.returns_result);
+                let user_fallible = callee_analysis
+                    .and_then(|analysis| analysis.error_info.as_ref())
+                    .map_or(false, |info| {
+                        info.needs_result_wrap || !info.error_types.is_empty()
+                    });
+                let is_fallible = hint_fallible || user_fallible;
 
                 let mut arg_actions = Vec::new();
-                // Receiver action
-                if let Some(ref hint) = hint {
-                    match hint.receiver {
+                // Receiver action: std hint > user-defined method sig > default borrow.
+                let receiver_sig = hint
+                    .as_ref()
+                    .map(|h| h.receiver)
+                    .or_else(|| callee_analysis.and_then(|analysis| analysis.self_sig));
+
+                if let Some(receiver_sig) = receiver_sig {
+                    match receiver_sig {
                         SelfSig::Ref => arg_actions.push(ArgAction::Borrow),
                         SelfSig::RefMut => arg_actions.push(ArgAction::BorrowMut),
                         SelfSig::Owned => {
@@ -460,16 +477,19 @@ pub fn finalize_call_sites(
                         }
                     }
                 } else {
-                    // Unknown method → default to Borrow
+                    // Unknown method target/signature.
                     arg_actions.push(ArgAction::Borrow);
                 }
 
                 // Regular args
                 for (i, arg) in args.iter().enumerate() {
-                    let callee_arg_sig = hint
-                        .as_ref()
-                        .and_then(|h| h.args.get(i).copied())
-                        .unwrap_or(ParamSig::Ref);
+                    let callee_arg_sig = if let Some(ref hint) = hint {
+                        hint.args.get(i).copied().unwrap_or(ParamSig::Ref)
+                    } else if let Some(analysis) = callee_analysis {
+                        param_sig_at(analysis, i)
+                    } else {
+                        ParamSig::Ref
+                    };
 
                     let action = match callee_arg_sig {
                         ParamSig::Ref => ArgAction::Borrow,
@@ -508,23 +528,11 @@ fn compute_arg_actions(
         .as_ref()
         .and_then(|k| functions.get(k));
 
-    // Get ordered param sigs from callee
-    let callee_param_names: Vec<_> = callee_analysis
-        .map(|a| {
-            let mut names: Vec<_> = a.param_sigs.keys().cloned().collect();
-            names.sort(); // stable ordering
-            names
-        })
-        .unwrap_or_default();
-
     args.iter()
         .enumerate()
         .map(|(i, arg)| {
-            let callee_sig = callee_param_names
-                .get(i)
-                .and_then(|name| {
-                    callee_analysis.and_then(|a| a.param_sigs.get(name).copied())
-                })
+            let callee_sig = callee_analysis
+                .map(|analysis| param_sig_at(analysis, i))
                 .unwrap_or(ParamSig::Ref); // default: Ref for unknown
 
             match callee_sig {
@@ -723,6 +731,22 @@ fn resolve_callee_key(func: &Operand, _body: &MirBody) -> Option<FnKey> {
     } else {
         None
     }
+}
+
+fn resolve_method_callee_key(receiver: &Operand, method: &str, body: &MirBody) -> Option<FnKey> {
+    let owner = type_to_owner(&operand_type(receiver, body))?;
+    Some(FnKey {
+        name: method.to_string(),
+        owner: Some(owner),
+    })
+}
+
+fn param_sig_at(analysis: &FnAnalysis, idx: usize) -> ParamSig {
+    analysis
+        .param_order
+        .get(idx)
+        .and_then(|name| analysis.param_sigs.get(name).copied())
+        .unwrap_or(ParamSig::Ref)
 }
 
 fn type_to_owner(ty: &HirType) -> Option<String> {

@@ -1,12 +1,12 @@
-=== Analysis: examples\03_ownership.nanachi ===
+=== Analysis: examples/03_ownership.nanachi ===
 
 --- ownership_example ---
   call_sites: 5 total
-    @312..330: fallible=false, actions=[BorrowMut, Clone]
-    @260..268: fallible=false, actions=[Borrow]
     @274..282: fallible=false, actions=[Borrow]
     @288..306: fallible=false, actions=[BorrowMut, Move]
     @244..254: fallible=false, actions=[]
+    @260..268: fallible=false, actions=[Borrow]
+    @312..330: fallible=false, actions=[BorrowMut, Clone]
 
 --- greet ---
   param name: Ref

@@ -1,13 +1,13 @@
 === Analysis: examples\05_option.nanachi ===
 
---- find_user ---
-  param id: Ref
-  call_sites: 1 total
-    @58..96: fallible=false, actions=[Borrow]
-
 --- option_example ---
   call_sites: 3 total
     @254..266: fallible=false, actions=[Borrow]
     @176..189: fallible=false, actions=[Borrow]
     @215..227: fallible=false, actions=[Borrow]
+
+--- find_user ---
+  param id: Ref
+  call_sites: 1 total
+    @58..96: fallible=false, actions=[Borrow]
 

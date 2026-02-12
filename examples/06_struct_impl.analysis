@@ -1,12 +1,13 @@
-=== Analysis: examples\06_struct_impl.nanachi ===
-
---- User::greet ---
-  self_sig: Ref
+=== Analysis: examples/06_struct_impl.nanachi ===
 
 --- User::new ---
   param age: Owned
   param name: Owned
 
 --- User::grow ---
+  mutable_vars: ["self"]
   self_sig: RefMut
+
+--- User::greet ---
+  self_sig: Ref
 

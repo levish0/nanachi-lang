@@ -8,7 +8,7 @@ use std::collections::{HashMap, HashSet};
 
 use nanachi_hir::{HirProgram, HirType};
 use nanachi_lexer::Span;
-use nanachi_mir::MirProgram;
+use nanachi_mir::{LocalKind, MirProgram};
 
 // ── Keys ─────────────────────────────────────────────────────
 
@@ -89,6 +89,8 @@ pub struct FnAnalysis {
     pub mutable_vars: HashSet<String>,
     /// Parameter signatures: name → Ref / RefMut / Owned.
     pub param_sigs: HashMap<String, ParamSig>,
+    /// Parameter order from the function signature for positional arg mapping.
+    pub param_order: Vec<String>,
     /// Self parameter signature, if present.
     pub self_sig: Option<SelfSig>,
     /// Call-site info keyed by span of the Call/MethodCall terminator.
@@ -130,6 +132,12 @@ pub fn analyze(mir: &MirProgram, hir: &HirProgram) -> AnalysisResult {
         let liveness_info = liveness::analyze_liveness(body);
         let (param_sigs, self_sig, call_sites, mut fn_warnings) =
             ownership::analyze_ownership_local(body, &liveness_info);
+        let param_order = body
+            .locals
+            .iter()
+            .filter(|decl| decl.kind == LocalKind::Param)
+            .map(|decl| decl.name.clone())
+            .collect();
 
         warnings.append(&mut fn_warnings);
 
@@ -138,6 +146,7 @@ pub fn analyze(mir: &MirProgram, hir: &HirProgram) -> AnalysisResult {
             FnAnalysis {
                 mutable_vars,
                 param_sigs,
+                param_order,
                 self_sig,
                 call_sites,
                 error_info: None,
@@ -298,6 +307,49 @@ mod tests {
         assert!(borrow_count >= 2, "expected at least 2 Borrow actions");
     }
 
+    #[test]
+    fn call_site_respects_param_order() {
+        let r = analyze_src(
+            r#"fn callee(z: String, a: Vec<i32>) {
+                a.push(1);
+                println!("{}", z);
+            }
+            fn main() {
+                let z: String = "hello";
+                let a: Vec<i32> = Vec::new();
+                callee(z, a);
+            }"#,
+        );
+        let f = get_fn(&r, "main");
+        let call = f
+            .call_sites
+            .values()
+            .find(|cs| cs.arg_actions.len() == 2)
+            .expect("expected callee call-site");
+        assert_eq!(call.arg_actions, vec![ArgAction::Borrow, ArgAction::BorrowMut]);
+    }
+
+    #[test]
+    fn method_call_uses_user_defined_self_sig() {
+        let r = analyze_src(
+            r#"struct User { age: i32 }
+            impl User {
+                fn grow(self) { self.age = self.age + 1; }
+            }
+            fn main() {
+                let u: User = User { age: 1 };
+                u.grow();
+            }"#,
+        );
+        let f = get_fn(&r, "main");
+        let call = f
+            .call_sites
+            .values()
+            .find(|cs| cs.arg_actions.len() == 1)
+            .expect("expected method call-site");
+        assert_eq!(call.arg_actions, vec![ArgAction::BorrowMut]);
+    }
+
     // ── Error propagation tests ──────────────────────────────
 
     #[test]
@@ -328,6 +380,24 @@ mod tests {
         if let Some(info) = &f.error_info {
             assert!(!info.needs_result_wrap);
         }
+    }
+
+    #[test]
+    fn main_is_error_propagation_stop_condition() {
+        let r = analyze_src(
+            r#"use std::fs;
+            fn main() {
+                let content: String = fs::read_to_string("config.toml");
+                println!("{}", content);
+            }"#,
+        );
+        let main = get_fn(&r, "main");
+        let info = main
+            .error_info
+            .as_ref()
+            .expect("main should still record fallible source info");
+        assert!(!info.needs_result_wrap);
+        assert_eq!(info.error_types.len(), 1);
     }
 
     // ── Integration tests ────────────────────────────────────

@@ -68,7 +68,7 @@ pub fn analyze_errors(
         if error_types.is_empty() {
             result.insert(key, None);
         } else {
-            let needs_result_wrap = !is_explicit;
+            let needs_result_wrap = !is_explicit && key.name != "main";
             let error_enum_name = if error_types.len() >= 2 && needs_result_wrap {
                 Some(make_error_enum_name(&body.name))
             } else {
@@ -133,7 +133,7 @@ pub fn analyze_errors(
                 let old_count = old.as_ref().map_or(0, |e| e.error_types.len());
 
                 if new_errors.len() != old_count {
-                    let needs_result_wrap = !is_explicit;
+                    let needs_result_wrap = !is_explicit && key.name != "main";
                     let error_enum_name = if new_errors.len() >= 2 && needs_result_wrap {
                         Some(make_error_enum_name(&body.name))
                     } else {
